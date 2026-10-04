@@ -1,0 +1,6 @@
+{
+  "name": "PlayZone Games - Wolverine PS5",
+  "description": "Loja online oficial de jogos PlayStation 5 com destaque exclusivo para Marvel's Wolverine PS5.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
