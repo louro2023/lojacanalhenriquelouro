@@ -77,8 +77,11 @@ export const WolverineBoxCover: React.FC<WolverineBoxCoverProps> = ({
           
           {/* Top Brand Bar */}
           <div className="relative z-10 w-full px-4 py-3 flex items-center justify-between bg-gradient-to-b from-black/80 to-transparent">
-            <div className="bg-[#e62429] text-white px-2.5 py-0.5 font-black text-[11px] tracking-wider uppercase shadow">
-              MARVEL
+            <div className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+              <span className="text-[10px] font-black tracking-widest text-slate-300 uppercase">
+                ORIGINAL
+              </span>
             </div>
             <div className="text-[10px] font-bold text-amber-400 uppercase tracking-widest">
               Edição Especial
