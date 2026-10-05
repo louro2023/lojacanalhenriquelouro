@@ -11,7 +11,7 @@ const BOND_URL =
   'https://drive.google.com/drive/folders/1_QpKgLa5mL-2ojdQHV8DgpBua2PLtUAt?usp=drive_link';
 
 const DONATION_URL =
-  'https://nubank.com.br/cobrar/3a4h2/6ac1ebcf-6865-4273-9f16-7fd64c6ca57c';
+  'https://nubank.com.br/cobrar/3a4h2/6ac3a284-c7d1-419a-8d8c-17364a2251c7';
 
 interface SelectedGame {
   name: string;
@@ -135,7 +135,7 @@ export default function App() {
               Apoie o Projeto
             </h3>
             <p className="text-xs text-slate-300 mt-1 mb-4 leading-relaxed max-w-sm">
-              É somente 2 reais para manter o projeto funcionando e adicionando novos jogos!
+              É somente 5 reais para manter o projeto funcionando e adicionando novos jogos!
             </p>
 
             <a

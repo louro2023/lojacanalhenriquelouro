@@ -109,7 +109,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
 
             {/* Exact requested support message */}
             <p className="text-sm text-slate-200 mt-3 mb-6 leading-relaxed font-medium bg-white/5 p-3.5 rounded-xl border border-white/10">
-              É somente <span className="text-amber-400 font-bold">2 reais</span> para manter o projeto funcionando e adicionando novos jogos!
+              É somente <span className="text-amber-400 font-bold">5 reais</span> para manter o projeto funcionando e adicionando novos jogos!
             </p>
 
             <div className="w-full flex flex-col gap-3">
