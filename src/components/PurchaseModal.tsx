@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Heart, Lock, KeyRound, AlertCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { X, Lock, KeyRound, AlertCircle, ArrowRight, Sparkles, ArrowLeft } from 'lucide-react';
+import { QRCodeDonationView } from './QRCodeDonationView';
 
 interface PurchaseModalProps {
   isOpen: boolean;
@@ -7,6 +8,7 @@ interface PurchaseModalProps {
   targetGameName: string;
   targetDriveUrl: string;
   donationUrl: string;
+  customDonationUrl: string;
 }
 
 export const PurchaseModal: React.FC<PurchaseModalProps> = ({
@@ -15,8 +17,9 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   targetGameName,
   targetDriveUrl,
   donationUrl,
+  customDonationUrl,
 }) => {
-  // Step 1: 'support' prompt; Step 2: 'password' entry
+  // Step 1: 'support' (with embedded QR code); Step 2: 'password' entry
   const [step, setStep] = useState<'support' | 'password'>('support');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,15 +43,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSupportAndContinue = () => {
-    // Open Nubank donation link in new tab
-    window.open(donationUrl, '_blank', 'noopener,noreferrer');
-    // Proceed to password step
-    setStep('password');
-  };
-
-  const handleSkipSupport = () => {
-    // "seguir sem apoiar pq sou mão de vaca!" -> proceed to password step
+  const handleAdvanceToPassword = () => {
     setStep('password');
   };
 
@@ -75,63 +70,49 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/85 backdrop-blur-sm transition-opacity"
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md rounded-2xl bg-[#0e121a] border border-amber-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(245,158,11,0.2)] p-6 z-10 animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md max-h-[92vh] overflow-y-auto rounded-2xl bg-[#0e121a] border border-amber-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(245,158,11,0.2)] p-6 z-10 animate-in fade-in zoom-in-95 duration-200">
         
         {/* Close Button */}
         <button
           onClick={onClose}
           type="button"
           aria-label="Fechar"
-          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors"
+          className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* STEP 1: SOLICITAÇÃO DE APOIO */}
+        {/* STEP 1: SOLICITAÇÃO DE APOIO COM QR CODE DIRETO NA TELA */}
         {step === 'support' && (
           <div className="flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-amber-500/20 border border-purple-500/30 text-purple-300 flex items-center justify-center mb-4 shadow-inner">
-              <Heart className="w-7 h-7 fill-purple-400 text-purple-400 animate-pulse" />
-            </div>
-
-            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1">
+            
+            <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-1">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{targetGameName}</span>
-            </span>
+            </div>
 
             <h3 className="text-xl font-black text-white uppercase tracking-tight font-sans">
               Apoie o Projeto!
             </h3>
 
-            {/* Exact requested support message */}
-            <p className="text-sm text-slate-200 mt-3 mb-6 leading-relaxed font-medium bg-white/5 p-3.5 rounded-xl border border-white/10">
+            {/* Requested message */}
+            <p className="text-xs sm:text-sm text-slate-200 mt-2 mb-4 leading-relaxed font-medium bg-white/5 p-3 rounded-xl border border-white/10">
               É somente <span className="text-amber-400 font-bold">5 reais</span> para manter o projeto funcionando e adicionando novos jogos!
             </p>
 
-            <div className="w-full flex flex-col gap-3">
-              {/* Button: Apoiar */}
-              <button
-                type="button"
-                onClick={handleSupportAndContinue}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-purple-600/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Heart className="w-4 h-4 fill-white text-white" />
-                <span>Apoiar</span>
-              </button>
-
-              {/* Button: Seguir sem apoiar pq sou mão de vaca! */}
-              <button
-                type="button"
-                onClick={handleSkipSupport}
-                className="w-full py-3 px-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white font-semibold text-xs tracking-wide transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <span>Seguir sem apoiar pq sou mão de vaca! 😂</span>
-              </button>
-            </div>
+            {/* In-Modal QR Code Display without opening new page */}
+            <QRCodeDonationView
+              donationUrl={donationUrl}
+              customDonationUrl={customDonationUrl}
+              onAdvance={handleAdvanceToPassword}
+              advanceButtonText="Já escaneei / Avançar para Senha"
+              onSkip={handleAdvanceToPassword}
+              skipButtonText="Seguir sem apoiar pq sou mão de vaca! 😂"
+            />
           </div>
         )}
 
@@ -200,9 +181,10 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
               <button
                 type="button"
                 onClick={() => setStep('support')}
-                className="text-xs text-slate-400 hover:text-slate-200 underline pt-1"
+                className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 underline pt-1 cursor-pointer"
               >
-                Voltar
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Voltar ao QR Code de apoio</span>
               </button>
             </form>
           </div>
