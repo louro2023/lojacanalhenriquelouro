@@ -1,49 +1,25 @@
-import React, { useState } from 'react';
-import { WolverineBoxCover } from './components/WolverineBoxCover';
-import { BondBoxCover } from './components/BondBoxCover';
-import { OnimushaBoxCover } from './components/OnimushaBoxCover';
-import { PurchaseModal } from './components/PurchaseModal';
-import { NoticeModal } from './components/NoticeModal';
-import { ShoppingCart, Heart, ExternalLink, Sparkles, Server, Info, Coins } from 'lucide-react';
+import React from 'react';
+import {
+  AlertTriangle,
+  ServerOff,
+  Heart,
+  ExternalLink,
+  Youtube,
+  MessageCircle,
+  Send,
+  Sparkles,
+  ShieldAlert,
+} from 'lucide-react';
 
-const WOLVERINE_URL =
-  'https://drive.google.com/drive/folders/1b-JKWAcrRU0s9nAE1dWqW_Y40ZOBNfrN?usp=drive_link';
-
-const BOND_URL =
-  'https://drive.google.com/drive/folders/1_QpKgLa5mL-2ojdQHV8DgpBua2PLtUAt?usp=drive_link';
-
-const ONIMUSHA_URL =
-  'https://drive.google.com/drive/folders/1oEzSNKLzjXiBosNs-1TLVxBQvNbYbbas?usp=drive_link';
-
-const DONATION_URL =
-  'https://nubank.com.br/cobrar/3a4h2/6ac3a284-c7d1-419a-8d8c-17364a2251c7';
-
-const CUSTOM_DONATION_URL =
-  'https://nubank.com.br/cobrar/3a4h2/6ac1eb8d-5603-425a-9724-34655040d351';
-
-interface SelectedGame {
-  name: string;
-  driveUrl: string;
-}
+const SUPPORTERS_URL = 'https://ajudeocanal.vercel.app/';
 
 export default function App() {
-  const [selectedGame, setSelectedGame] = useState<SelectedGame | null>(null);
-  const [isNoticeOpen, setIsNoticeOpen] = useState(true);
-
-  const handleOpenPurchase = (name: string, driveUrl: string) => {
-    setSelectedGame({ name, driveUrl });
-  };
-
-  const handleClosePurchaseModal = () => {
-    setSelectedGame(null);
-  };
-
   return (
-    <div className="min-h-screen bg-[#090c12] text-slate-100 flex flex-col font-sans selection:bg-amber-400 selection:text-black">
+    <div className="min-h-screen bg-[#07090e] text-slate-100 flex flex-col font-sans selection:bg-amber-400 selection:text-black">
       
       {/* Top Header - Henrique Games */}
-      <header className="w-full border-b border-white/10 bg-[#07090e]/80 backdrop-blur-md sticky top-0 z-30">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <header className="w-full border-b border-white/10 bg-[#06080d]/90 backdrop-blur-md sticky top-0 z-30">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-500 flex items-center justify-center text-black font-black text-base shadow-md shadow-amber-500/20">
               HG
@@ -53,191 +29,156 @@ export default function App() {
             </span>
           </div>
 
-          {/* Header Action Buttons */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
-            <button
-              type="button"
-              onClick={() => setIsNoticeOpen(true)}
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs font-medium transition-colors cursor-pointer"
-              title="Avisos sobre o servidor e downloads"
-            >
-              <Info className="w-3.5 h-3.5 text-amber-400" />
-              <span>Avisos</span>
-            </button>
-
-            {/* Quick Support Link (R$ 5) */}
+          {/* Status Badge in Header */}
+          <div className="flex items-center gap-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-950/40 border border-red-500/30 text-red-300 text-xs font-semibold">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+              <span>Fora do Ar</span>
+            </div>
             <a
-              href={DONATION_URL}
+              href={SUPPORTERS_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg bg-purple-950/60 hover:bg-purple-900/70 border border-purple-500/40 text-purple-300 hover:text-white text-xs font-semibold transition-all shadow-sm cursor-pointer"
+              className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold transition-all shadow-sm shadow-purple-600/20 cursor-pointer"
             >
-              <Heart className="w-3.5 h-3.5 fill-purple-400 text-purple-400" />
-              <span>Apoiar (R$ 5)</span>
-            </a>
-
-            {/* Quick Support Link (Outro Valor) */}
-            <a
-              href={CUSTOM_DONATION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
-            >
-              <Coins className="w-3.5 h-3.5 text-amber-400" />
-              <span>Outro Valor</span>
+              <Heart className="w-3.5 h-3.5 fill-white" />
+              <span>Página de Apoiadores</span>
+              <ExternalLink className="w-3 h-3 opacity-80" />
             </a>
           </div>
         </div>
       </header>
 
-      {/* Notice Banner */}
-      <div className="w-full bg-gradient-to-r from-purple-950/40 via-amber-950/30 to-purple-950/40 border-b border-white/5 px-4 py-2.5">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left text-xs text-slate-300">
-          <div className="flex items-center gap-2">
-            <Server className="w-4 h-4 text-amber-400 shrink-0" />
-            <span>
-              <strong>Meta do Servidor:</strong> Apoie para adquirirmos um servidor próprio e evitar cotas do Google Drive!
-            </span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsNoticeOpen(true)}
-            className="text-amber-400 hover:underline font-semibold cursor-pointer shrink-0"
-          >
-            Ler comunicado completo →
-          </button>
-        </div>
-      </div>
-
-      {/* Main Content */}
+      {/* Main Announcement Section */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-12 relative overflow-hidden">
         
-        {/* Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[600px] bg-gradient-to-tr from-amber-500/10 via-purple-600/10 to-red-600/10 rounded-full blur-[150px] pointer-events-none" />
+        {/* Ambient Glows */}
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gradient-to-tr from-red-600/10 via-amber-600/10 to-purple-600/10 rounded-full blur-[140px] pointer-events-none" />
 
-        <div className="w-full max-w-6xl flex flex-col items-center text-center relative z-10">
+        <div className="w-full max-w-3xl flex flex-col items-center text-center relative z-10">
           
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-amber-400 font-semibold mb-8">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Catálogo de Jogos</span>
+          {/* Status Alert Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold uppercase tracking-wider mb-6 animate-pulse">
+            <AlertTriangle className="w-4 h-4" />
+            <span>Aviso aos Visitantes e Apoiadores</span>
           </div>
 
-          {/* Games Showcase Grid (Wolverine, 007, Onimusha) */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-8 items-start justify-items-center">
+          {/* Main Title */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm mb-4">
+            Página da Loja <span className="text-amber-400">Desativada</span>
+          </h1>
+
+          <p className="text-sm sm:text-base text-slate-300 max-w-2xl leading-relaxed mb-8">
+            Precisamos retirar a página da loja temporariamente do ar para reestruturar a forma de distribuição dos jogos. Confira os motivos e os próximos passos abaixo.
+          </p>
+
+          {/* Detailed Announcement Cards */}
+          <div className="w-full space-y-4 text-left mb-10">
             
-            {/* GAME 1: WOLVERINE */}
-            <div className="w-full max-w-sm flex flex-col items-center text-center bg-white/[0.02] border border-white/5 p-6 rounded-3xl hover:border-amber-500/20 transition-colors">
-              <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm mb-5">
-                <span className="text-amber-400">Wolverine</span>
-              </h2>
-
-              {/* Wolverine 3D Cover */}
-              <div className="flex justify-center w-full mb-6">
-                <WolverineBoxCover
-                  driveUrl={WOLVERINE_URL}
-                  onClick={() => handleOpenPurchase('Wolverine', WOLVERINE_URL)}
-                />
+            {/* Card 1: Problemas com o Google & Doações Insuficientes */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#0e121b] border border-red-500/25 shadow-xl">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/30 text-red-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-white uppercase tracking-wide">
+                    Problemas com o Google e Servidor
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                    Estamos enfrentando <strong>muitos problemas relacionados ao Google</strong> (bloqueios constantes, limitações severas de download e cotas esgotadas que prejudicam a experiência de todos).
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                    Infelizmente, <strong>as doações recebidas foram insuficientes para a aquisição de um servidor próprio e dedicado</strong>, o que inviabiliza manter a loja no ar com essa infraestrutura atual.
+                  </p>
+                </div>
               </div>
-
-              {/* COMPRAR Button */}
-              <button
-                type="button"
-                onClick={() => handleOpenPurchase('Wolverine', WOLVERINE_URL)}
-                className="w-full max-w-[320px] py-4 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black font-black text-base uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer"
-              >
-                <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span>COMPRAR</span>
-              </button>
             </div>
 
-            {/* GAME 2: 007 */}
-            <div className="w-full max-w-sm flex flex-col items-center text-center bg-white/[0.02] border border-white/5 p-6 rounded-3xl hover:border-amber-500/20 transition-colors">
-              <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm mb-5">
-                <span className="text-amber-400">007</span>
-              </h2>
-
-              {/* 007 3D Cover */}
-              <div className="flex justify-center w-full mb-6">
-                <BondBoxCover
-                  driveUrl={BOND_URL}
-                  onClick={() => handleOpenPurchase('007', BOND_URL)}
-                />
+            {/* Card 2: Soluções em Estudo (Grupo Privado WhatsApp / Telegram) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#0e121b] border border-amber-500/25 shadow-xl">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-white uppercase tracking-wide">
+                    Novas Soluções em Avaliação
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                    Para contornar esses bloqueios, estamos pensando em alternativas seguras e diretas, como a criação de um <strong>grupo privado no WhatsApp ou Telegram exclusivo com os apoiadores</strong> do canal.
+                  </p>
+                  <p className="text-xs sm:text-sm text-amber-200/90 font-medium mt-2.5 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 leading-relaxed">
+                    💬 <strong>Concorda com essa ideia?</strong> Deixe um comentário em qualquer vídeo do nosso canal no YouTube pedindo a criação do grupo! Sua opinião é fundamental para decidirmos juntos.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold">
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      Grupo Privado no WhatsApp
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-sky-500/15 border border-sky-500/30 text-sky-300 font-semibold">
+                      <Send className="w-3.5 h-3.5" />
+                      Grupo Exclusivo no Telegram
+                    </span>
+                  </div>
+                </div>
               </div>
-
-              {/* COMPRAR Button */}
-              <button
-                type="button"
-                onClick={() => handleOpenPurchase('007', BOND_URL)}
-                className="w-full max-w-[320px] py-4 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black font-black text-base uppercase tracking-wider shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer"
-              >
-                <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span>COMPRAR</span>
-              </button>
             </div>
 
-            {/* GAME 3: ONIMUSHA */}
-            <div className="w-full max-w-sm flex flex-col items-center text-center bg-white/[0.02] border border-white/5 p-6 rounded-3xl hover:border-red-500/20 transition-colors">
-              <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm mb-5">
-                <span className="text-red-400">Onimusha</span>
-              </h2>
-
-              {/* Onimusha 3D Cover */}
-              <div className="flex justify-center w-full mb-6">
-                <OnimushaBoxCover
-                  driveUrl={ONIMUSHA_URL}
-                  onClick={() => handleOpenPurchase('Onimusha', ONIMUSHA_URL)}
-                />
+            {/* Card 3: Avisos no YouTube */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-[#0e121b] border border-red-600/25 shadow-xl">
+              <div className="flex items-start gap-3.5">
+                <div className="w-10 h-10 rounded-xl bg-red-600/15 border border-red-600/30 text-red-500 flex items-center justify-center shrink-0 mt-0.5">
+                  <Youtube className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-white uppercase tracking-wide">
+                    Fique Ligado no Canal do YouTube!
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
+                    Em breve teremos <strong>mais informações e comunicados oficiais</strong> sobre a criação do grupo privado ou outro método seguro de disponibilização dos jogos diretamente nos vídeos e na comunidade do <strong>canal do YouTube (Henrique Louro)</strong>!
+                  </p>
+                </div>
               </div>
-
-              {/* COMPRAR Button */}
-              <button
-                type="button"
-                onClick={() => handleOpenPurchase('Onimusha', ONIMUSHA_URL)}
-                className="w-full max-w-[320px] py-4 px-6 rounded-xl bg-gradient-to-r from-red-600 via-amber-500 to-yellow-400 text-black font-black text-base uppercase tracking-wider shadow-[0_0_25px_rgba(239,68,68,0.35)] hover:shadow-[0_0_35px_rgba(239,68,68,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 group cursor-pointer"
-              >
-                <ShoppingCart className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                <span>COMPRAR</span>
-              </button>
             </div>
 
           </div>
 
-          {/* Apoiar o Projeto Card */}
-          <div className="w-full max-w-lg mt-14 p-6 rounded-2xl bg-gradient-to-b from-[#161224] to-[#0f0e17] border border-purple-500/30 shadow-lg text-center flex flex-col items-center">
-            <div className="w-11 h-11 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400 flex items-center justify-center mb-3 shadow-inner">
-              <Heart className="w-5 h-5 fill-purple-400 text-purple-400" />
+          {/* Prominent Callout to Supporters Page */}
+          <div className="w-full p-6 sm:p-8 rounded-3xl bg-gradient-to-b from-[#181328] via-[#100e1c] to-[#0a0812] border-2 border-purple-500/40 shadow-[0_20px_50px_rgba(0,0,0,0.8),0_0_35px_rgba(168,85,247,0.25)] flex flex-col items-center text-center">
+            
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/20 border border-purple-500/40 text-purple-300 flex items-center justify-center mb-4 shadow-inner">
+              <Heart className="w-7 h-7 fill-purple-400 text-purple-400 animate-pulse" />
             </div>
 
-            <h3 className="text-base font-bold text-white uppercase tracking-wide">
-              Apoie o Servidor & Novos Jogos
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 uppercase tracking-widest mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Espaço Exclusivo</span>
+            </div>
+
+            <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight font-sans">
+              Página Exclusiva de Apoiadores
             </h3>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1 mb-5 leading-relaxed max-w-md">
-              É somente 5 reais para manter o projeto funcionando, adquirir nosso servidor e adicionar novos jogos! Caso queira contribuir com qualquer outro valor, use o botão abaixo.
+
+            <p className="text-xs sm:text-sm text-slate-300 mt-2 mb-6 max-w-md leading-relaxed">
+              Quer continuar acompanhando as novidades e apoiando o canal? Acesse agora a nossa página dedicada para apoiadores!
             </p>
 
-            <div className="w-full max-w-sm flex flex-col gap-2.5">
-              <a
-                href={DONATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Heart className="w-3.5 h-3.5 fill-white text-white" />
-                <span>Apoiar (R$ 5)</span>
-                <ExternalLink className="w-3 h-3 opacity-80" />
-              </a>
+            {/* Main Action Button */}
+            <a
+              href={SUPPORTERS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full max-w-md py-4 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-sm sm:text-base uppercase tracking-wider shadow-lg shadow-purple-600/30 hover:shadow-purple-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2.5 cursor-pointer"
+            >
+              <Heart className="w-5 h-5 fill-white text-white" />
+              <span>Acessar Página de Apoiadores</span>
+              <ExternalLink className="w-4 h-4 opacity-90" />
+            </a>
 
-              <a
-                href={CUSTOM_DONATION_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2.5 px-5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Coins className="w-3.5 h-3.5 text-amber-400" />
-                <span>Apoiar com Outro Valor</span>
-                <ExternalLink className="w-3 h-3 opacity-80" />
-              </a>
-            </div>
+            <span className="text-[11px] text-slate-400 mt-3 font-mono">
+              ajudeocanal.vercel.app
+            </span>
           </div>
 
         </div>
@@ -245,50 +186,23 @@ export default function App() {
       </main>
 
       {/* Minimalist Footer */}
-      <footer className="w-full border-t border-white/10 py-6 text-center text-xs text-slate-500 bg-[#07090e]">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="w-full border-t border-white/10 py-6 text-center text-xs text-slate-500 bg-[#06080d]">
+        <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="font-semibold text-slate-400">Henrique Games</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-slate-500">
-            <button
-              onClick={() => setIsNoticeOpen(true)}
-              className="hover:text-amber-400 transition-colors cursor-pointer"
-            >
-              Avisos sobre downloads & servidor
-            </button>
-            <span>•</span>
             <a
-              href={CUSTOM_DONATION_URL}
+              href={SUPPORTERS_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-amber-400 transition-colors cursor-pointer"
             >
-              Apoiar com Outro Valor
+              Página de Apoiadores
             </a>
             <span>•</span>
             <p className="text-[11px]">Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
-
-      {/* Initial Announcement Modal */}
-      <NoticeModal
-        isOpen={isNoticeOpen}
-        onClose={() => setIsNoticeOpen(false)}
-        donationUrl={DONATION_URL}
-        customDonationUrl={CUSTOM_DONATION_URL}
-      />
-
-      {/* Purchase & Support Modal */}
-      {selectedGame && (
-        <PurchaseModal
-          isOpen={!!selectedGame}
-          onClose={handleClosePurchaseModal}
-          targetGameName={selectedGame.name}
-          targetDriveUrl={selectedGame.driveUrl}
-          donationUrl={DONATION_URL}
-          customDonationUrl={CUSTOM_DONATION_URL}
-        />
-      )}
 
     </div>
   );
