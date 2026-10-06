@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Lock, KeyRound, AlertCircle, ArrowRight, Sparkles, ArrowLeft } from 'lucide-react';
-import { QRCodeDonationView } from './QRCodeDonationView';
+import { X, Heart, Lock, KeyRound, AlertCircle, ArrowRight, Sparkles, Coins, ExternalLink } from 'lucide-react';
 
 interface PurchaseModalProps {
   isOpen: boolean;
@@ -19,7 +18,7 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
   donationUrl,
   customDonationUrl,
 }) => {
-  // Step 1: 'support' (with embedded QR code); Step 2: 'password' entry
+  // Step 1: 'support' prompt; Step 2: 'password' entry
   const [step, setStep] = useState<'support' | 'password'>('support');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -43,7 +42,15 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleAdvanceToPassword = () => {
+  const handleSupportAndContinue = (url: string) => {
+    // Open Nubank payment link in new tab
+    window.open(url, '_blank', 'noopener,noreferrer');
+    // Proceed to password step
+    setStep('password');
+  };
+
+  const handleSkipSupport = () => {
+    // "seguir sem apoiar pq sou mão de vaca!" -> proceed to password step
     setStep('password');
   };
 
@@ -70,11 +77,11 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
       {/* Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/85 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md max-h-[92vh] overflow-y-auto rounded-2xl bg-[#0e121a] border border-amber-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(245,158,11,0.2)] p-6 z-10 animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md rounded-2xl bg-[#0e121a] border border-amber-500/30 shadow-[0_20px_50px_rgba(0,0,0,0.95),0_0_35px_rgba(245,158,11,0.2)] p-6 z-10 animate-in fade-in zoom-in-95 duration-200">
         
         {/* Close Button */}
         <button
@@ -86,33 +93,59 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        {/* STEP 1: SOLICITAÇÃO DE APOIO COM QR CODE DIRETO NA TELA */}
+        {/* STEP 1: SOLICITAÇÃO DE APOIO */}
         {step === 'support' && (
           <div className="flex flex-col items-center text-center">
-            
-            <div className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-1">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500/20 to-amber-500/20 border border-purple-500/30 text-purple-300 flex items-center justify-center mb-4 shadow-inner">
+              <Heart className="w-7 h-7 fill-purple-400 text-purple-400 animate-pulse" />
+            </div>
+
+            <span className="text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-1 flex items-center gap-1">
               <Sparkles className="w-3.5 h-3.5" />
               <span>{targetGameName}</span>
-            </div>
+            </span>
 
             <h3 className="text-xl font-black text-white uppercase tracking-tight font-sans">
               Apoie o Projeto!
             </h3>
 
             {/* Requested message */}
-            <p className="text-xs sm:text-sm text-slate-200 mt-2 mb-4 leading-relaxed font-medium bg-white/5 p-3 rounded-xl border border-white/10">
+            <p className="text-sm text-slate-200 mt-3 mb-6 leading-relaxed font-medium bg-white/5 p-3.5 rounded-xl border border-white/10">
               É somente <span className="text-amber-400 font-bold">5 reais</span> para manter o projeto funcionando e adicionando novos jogos!
             </p>
 
-            {/* In-Modal QR Code Display without opening new page */}
-            <QRCodeDonationView
-              donationUrl={donationUrl}
-              customDonationUrl={customDonationUrl}
-              onAdvance={handleAdvanceToPassword}
-              advanceButtonText="Já escaneei / Avançar para Senha"
-              onSkip={handleAdvanceToPassword}
-              skipButtonText="Seguir sem apoiar pq sou mão de vaca! 😂"
-            />
+            <div className="w-full flex flex-col gap-3">
+              {/* Button: Apoiar (R$ 5) */}
+              <button
+                type="button"
+                onClick={() => handleSupportAndContinue(donationUrl)}
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-purple-600/25 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Heart className="w-4 h-4 fill-white text-white" />
+                <span>Apoiar (R$ 5)</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+              </button>
+
+              {/* Button: Apoiar com Outro Valor */}
+              <button
+                type="button"
+                onClick={() => handleSupportAndContinue(customDonationUrl)}
+                className="w-full py-3 px-4 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-white font-bold text-xs uppercase tracking-wider transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Coins className="w-4 h-4 text-amber-400" />
+                <span>Apoiar com Outro Valor</span>
+                <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+              </button>
+
+              {/* Button: Seguir sem apoiar pq sou mão de vaca! */}
+              <button
+                type="button"
+                onClick={handleSkipSupport}
+                className="w-full py-2.5 px-4 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-white/10 text-slate-300 hover:text-white font-semibold text-xs tracking-wide transition-all active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer mt-1"
+              >
+                <span>Seguir sem apoiar pq sou mão de vaca! 😂</span>
+              </button>
+            </div>
           </div>
         )}
 
@@ -181,10 +214,9 @@ export const PurchaseModal: React.FC<PurchaseModalProps> = ({
               <button
                 type="button"
                 onClick={() => setStep('support')}
-                className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-200 underline pt-1 cursor-pointer"
+                className="text-xs text-slate-400 hover:text-slate-200 underline pt-1 cursor-pointer"
               >
-                <ArrowLeft className="w-3.5 h-3.5" />
-                <span>Voltar ao QR Code de apoio</span>
+                Voltar
               </button>
             </form>
           </div>

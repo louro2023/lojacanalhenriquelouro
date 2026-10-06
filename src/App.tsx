@@ -4,8 +4,7 @@ import { BondBoxCover } from './components/BondBoxCover';
 import { OnimushaBoxCover } from './components/OnimushaBoxCover';
 import { PurchaseModal } from './components/PurchaseModal';
 import { NoticeModal } from './components/NoticeModal';
-import { DonationModal } from './components/DonationModal';
-import { ShoppingCart, Heart, Sparkles, Server, Info, Coins, QrCode } from 'lucide-react';
+import { ShoppingCart, Heart, ExternalLink, Sparkles, Server, Info, Coins } from 'lucide-react';
 
 const WOLVERINE_URL =
   'https://drive.google.com/drive/folders/1b-JKWAcrRU0s9nAE1dWqW_Y40ZOBNfrN?usp=drive_link';
@@ -30,13 +29,6 @@ interface SelectedGame {
 export default function App() {
   const [selectedGame, setSelectedGame] = useState<SelectedGame | null>(null);
   const [isNoticeOpen, setIsNoticeOpen] = useState(true);
-  const [donationModalState, setDonationModalState] = useState<{
-    isOpen: boolean;
-    mode: 'fixed' | 'custom';
-  }>({
-    isOpen: false,
-    mode: 'fixed',
-  });
 
   const handleOpenPurchase = (name: string, driveUrl: string) => {
     setSelectedGame({ name, driveUrl });
@@ -44,10 +36,6 @@ export default function App() {
 
   const handleClosePurchaseModal = () => {
     setSelectedGame(null);
-  };
-
-  const handleOpenDonation = (mode: 'fixed' | 'custom' = 'fixed') => {
-    setDonationModalState({ isOpen: true, mode });
   };
 
   return (
@@ -65,7 +53,7 @@ export default function App() {
             </span>
           </div>
 
-          {/* Header Action Buttons (Open in-app QR Code modals without external pages) */}
+          {/* Header Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-2.5">
             <button
               type="button"
@@ -77,25 +65,27 @@ export default function App() {
               <span>Avisos</span>
             </button>
 
-            {/* Quick Support QR Button (R$ 5) */}
-            <button
-              type="button"
-              onClick={() => handleOpenDonation('fixed')}
+            {/* Quick Support Link (R$ 5) */}
+            <a
+              href={DONATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-lg bg-purple-950/60 hover:bg-purple-900/70 border border-purple-500/40 text-purple-300 hover:text-white text-xs font-semibold transition-all shadow-sm cursor-pointer"
             >
               <Heart className="w-3.5 h-3.5 fill-purple-400 text-purple-400" />
               <span>Apoiar (R$ 5)</span>
-            </button>
+            </a>
 
-            {/* Quick Support QR Button (Outro Valor) */}
-            <button
-              type="button"
-              onClick={() => handleOpenDonation('custom')}
+            {/* Quick Support Link (Outro Valor) */}
+            <a
+              href={CUSTOM_DONATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
             >
               <Coins className="w-3.5 h-3.5 text-amber-400" />
               <span>Outro Valor</span>
-            </button>
+            </a>
           </div>
         </div>
       </header>
@@ -212,7 +202,7 @@ export default function App() {
 
           </div>
 
-          {/* Apoiar o Projeto Card (Opens in-modal QR code without new page) */}
+          {/* Apoiar o Projeto Card */}
           <div className="w-full max-w-lg mt-14 p-6 rounded-2xl bg-gradient-to-b from-[#161224] to-[#0f0e17] border border-purple-500/30 shadow-lg text-center flex flex-col items-center">
             <div className="w-11 h-11 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-400 flex items-center justify-center mb-3 shadow-inner">
               <Heart className="w-5 h-5 fill-purple-400 text-purple-400" />
@@ -222,27 +212,31 @@ export default function App() {
               Apoie o Servidor & Novos Jogos
             </h3>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 mb-5 leading-relaxed max-w-md">
-              É somente 5 reais para manter o projeto funcionando, adquirir nosso servidor e adicionar novos jogos! Escaneie o QR Code diretamente na tela.
+              É somente 5 reais para manter o projeto funcionando, adquirir nosso servidor e adicionar novos jogos! Caso queira contribuir com qualquer outro valor, use o botão abaixo.
             </p>
 
             <div className="w-full max-w-sm flex flex-col gap-2.5">
-              <button
-                type="button"
-                onClick={() => handleOpenDonation('fixed')}
+              <a
+                href={DONATION_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full py-3 px-5 rounded-xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 text-white font-bold text-xs uppercase tracking-wider shadow-md hover:brightness-110 hover:shadow-purple-500/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
-                <QrCode className="w-4 h-4 text-white" />
-                <span>Exibir QR Code (R$ 5)</span>
-              </button>
+                <Heart className="w-3.5 h-3.5 fill-white text-white" />
+                <span>Apoiar (R$ 5)</span>
+                <ExternalLink className="w-3 h-3 opacity-80" />
+              </a>
 
-              <button
-                type="button"
-                onClick={() => handleOpenDonation('custom')}
+              <a
+                href={CUSTOM_DONATION_URL}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full py-2.5 px-5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Coins className="w-3.5 h-3.5 text-amber-400" />
-                <span>QR Code (Outro Valor)</span>
-              </button>
+                <span>Apoiar com Outro Valor</span>
+                <ExternalLink className="w-3 h-3 opacity-80" />
+              </a>
             </div>
           </div>
 
@@ -262,12 +256,14 @@ export default function App() {
               Avisos sobre downloads & servidor
             </button>
             <span>•</span>
-            <button
-              onClick={() => handleOpenDonation('custom')}
+            <a
+              href={CUSTOM_DONATION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-amber-400 transition-colors cursor-pointer"
             >
               Apoiar com Outro Valor
-            </button>
+            </a>
             <span>•</span>
             <p className="text-[11px]">Todos os direitos reservados.</p>
           </div>
@@ -282,16 +278,7 @@ export default function App() {
         customDonationUrl={CUSTOM_DONATION_URL}
       />
 
-      {/* Standalone Donation QR Modal */}
-      <DonationModal
-        isOpen={donationModalState.isOpen}
-        onClose={() => setDonationModalState((prev) => ({ ...prev, isOpen: false }))}
-        donationUrl={DONATION_URL}
-        customDonationUrl={CUSTOM_DONATION_URL}
-        initialMode={donationModalState.mode}
-      />
-
-      {/* Purchase & Support Modal with Embedded QR Code */}
+      {/* Purchase & Support Modal */}
       {selectedGame && (
         <PurchaseModal
           isOpen={!!selectedGame}
