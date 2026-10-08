@@ -6,16 +6,12 @@ import {
   onSnapshot,
   setDoc,
   updateDoc,
-  deleteDoc,
-  getDocs,
-  getDoc,
   increment,
   getDocFromServer,
   query,
   orderBy,
   limit,
   addDoc,
-  where,
   serverTimestamp,
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
@@ -36,20 +32,6 @@ export async function testFirebaseConnection(): Promise<boolean> {
   }
 }
 
-export interface UserAccount {
-  id: string;
-  username: string;
-  email: string;
-  password?: string;
-  role: 'admin' | 'customer';
-  status: 'active' | 'pending' | 'suspended' | 'expired';
-  downloadCredits: number;
-  totalDownloads: number;
-  licenseDays: number;
-  licenseExpiresAt: string; // ISO String
-  createdAt: string;
-}
-
 export interface GameItem {
   id: string;
   title: string;
@@ -67,16 +49,29 @@ export interface SupporterMessageItem {
   id: string;
   name: string;
   message: string;
+  gameRequested?: string;
   createdAt?: string;
 }
 
 export const INITIAL_GAMES: GameItem[] = [
   {
+    id: 'silenthill_townfall',
+    title: 'Silent Hill: Townfall',
+    realName: 'Silent.Hill.Townfall.exfat',
+    platform: 'PS5',
+    driveUrl: 'https://vault1.link-vault.org/c/K7J88S4_',
+    coverUrl: '/images/silent_hill_townfall.jpg',
+    likes: 135,
+    downloads: 78,
+    developer: 'Konami / Annapurna',
+    description: 'Terror psicológico visceral e atmosfera densa na névoa enigmática. 100% testado e funcionando pronto para instalação no PS5.',
+  },
+  {
     id: 'wolverine',
     title: 'Wolverine',
     realName: "Marvel's Wolverine",
     platform: 'PS5',
-    driveUrl: 'https://drive.google.com/drive/folders/1b-JKWAcrRU0s9nAE1dWqW_Y40ZOBNfrN?usp=drive_link',
+    driveUrl: 'https://vault14.link-vault.org/c/i45HTvlW',
     coverUrl: 'https://upload.wikimedia.org/wikipedia/en/3/3d/Marvel%27s_Wolverine_cover_art.jpg',
     likes: 142,
     downloads: 389,
@@ -88,7 +83,7 @@ export const INITIAL_GAMES: GameItem[] = [
     title: '007',
     realName: '007 First Light',
     platform: 'PS5',
-    driveUrl: 'https://drive.google.com/drive/folders/1_QpKgLa5mL-2ojdQHV8DgpBua2PLtUAt?usp=drive_link',
+    driveUrl: 'https://vault1.link-vault.org/c/4cKVAIvM',
     coverUrl: 'https://upload.wikimedia.org/wikipedia/en/2/2b/007_First_Light_%282026%29_cover.jpg',
     likes: 98,
     downloads: 247,
@@ -97,364 +92,19 @@ export const INITIAL_GAMES: GameItem[] = [
   },
   {
     id: 'onimusha',
-    title: 'Onimusha',
-    realName: 'Onimusha: Warlords',
+    title: 'Onimusha: Way of the Sword',
+    realName: 'Onimusha: Way of the Sword',
     platform: 'PS5',
-    driveUrl: 'https://drive.google.com/drive/folders/1oEzSNKLzjXiBosNs-1TLVxBQvNbYbbas?usp=drive_link',
-    coverUrl: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/761030/library_600x900_2x.jpg',
+    driveUrl: 'https://vault15.link-vault.org/c/Ip8J0lL4',
+    coverUrl: '/covers/onimusha_way_of_the_sword.jpg',
     likes: 85,
     downloads: 194,
     developer: 'Capcom',
-    description: 'Lenda samurai no Japão feudal enfrentando demônios com a manopla Oni e espadas mágicas.',
+    description: 'Ação e combate samurai com Miyamoto Musashi e a manopla Oni demoníaca na era feudal de Kyoto.',
   },
 ];
 
-// Helper to calculate future expiration date
-export function calculateExpirationDate(days: number): string {
-  const date = new Date();
-  date.setDate(date.getDate() + Math.max(1, days));
-  return date.toISOString();
-}
-
-// Calculate remaining days from ISO date
-export function getDaysRemaining(expiresAt: string): number {
-  if (!expiresAt) return 0;
-  const now = new Date().getTime();
-  const target = new Date(expiresAt).getTime();
-  const diff = target - now;
-  if (diff <= 0) return 0;
-  return Math.ceil(diff / (1000 * 60 * 60 * 24));
-}
-
-// Check if license is still valid
-export function isLicenseValid(user: UserAccount): boolean {
-  if (user.role === 'admin') return true;
-  if (user.status !== 'active') return false;
-  return getDaysRemaining(user.licenseExpiresAt) > 0;
-}
-
-// Seed initial users if none exist
-export async function seedInitialUsers() {
-  try {
-    const now = new Date().toISOString();
-
-    // Master Administrator Henrique Louro
-    const henriqueRef = doc(db, 'userAccounts', 'admin_henrique_louro');
-    const adminUser: UserAccount = {
-      id: 'admin_henrique_louro',
-      username: 'Henrique Louro',
-      email: 'henrique-louro@hotmail.com',
-      password: 'Fredunter2020!',
-      role: 'admin',
-      status: 'active',
-      downloadCredits: 9999,
-      totalDownloads: 0,
-      licenseDays: 3650,
-      licenseExpiresAt: calculateExpirationDate(3650),
-      createdAt: now,
-    };
-    await setDoc(henriqueRef, adminUser, { merge: true });
-
-    // Seed a sample customer account if needed
-    const demoRef = doc(db, 'userAccounts', 'demo_gamer');
-    const demoSnap = await getDoc(demoRef);
-    if (!demoSnap.exists()) {
-      const demoUser: UserAccount = {
-        id: 'demo_gamer',
-        username: 'Gamer Demonstração',
-        email: 'gamer@henriquegames.com',
-        password: 'gamer123',
-        role: 'customer',
-        status: 'active',
-        downloadCredits: 999,
-        totalDownloads: 2,
-        licenseDays: 30,
-        licenseExpiresAt: calculateExpirationDate(30),
-        createdAt: now,
-      };
-      await setDoc(demoRef, demoUser);
-    }
-  } catch (e) {
-    console.warn('Initial users seed check:', e);
-  }
-}
-
-// Login user
-export async function loginUser(
-  identifier: string,
-  pass: string
-): Promise<{ user: UserAccount | null; error?: string }> {
-  try {
-    await seedInitialUsers();
-    const cleanId = identifier.trim().toLowerCase();
-    const cleanPass = pass.trim();
-
-    const usersCol = collection(db, 'userAccounts');
-    const snapshot = await getDocs(usersCol);
-
-    let foundUser: UserAccount | null = null;
-
-    snapshot.forEach((d) => {
-      const data = d.data() as UserAccount;
-      if (
-        (data.email?.toLowerCase() === cleanId || data.username?.toLowerCase() === cleanId) &&
-        data.password === cleanPass
-      ) {
-        foundUser = { ...data, id: d.id };
-      }
-    });
-
-    if (!foundUser) {
-      return { user: null, error: 'E-mail, usuário ou senha incorretos.' };
-    }
-
-    const u = foundUser as UserAccount;
-
-    if (u.status === 'pending') {
-      return {
-        user: null,
-        error: 'Sua conta ainda está aguardando aprovação do administrador.',
-      };
-    }
-
-    if (u.status === 'suspended') {
-      return {
-        user: null,
-        error: 'Esta conta foi suspensa temporariamente pelo administrador.',
-      };
-    }
-
-    // Check expiration for customers
-    if (u.role === 'customer' && getDaysRemaining(u.licenseExpiresAt) <= 0) {
-      // Mark as expired
-      await updateDoc(doc(db, 'userAccounts', u.id), { status: 'expired' });
-      return {
-        user: null,
-        error: 'Sua licença de acesso expirou. Entre em contato para renovar!',
-      };
-    }
-
-    return { user: u };
-  } catch (err: any) {
-    return { user: null, error: err.message || 'Falha ao autenticar usuário.' };
-  }
-}
-
-// Request access / Register user as pending
-export async function requestAccess(
-  username: string,
-  email: string,
-  password: string
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    const usersCol = collection(db, 'userAccounts');
-    const qEmail = query(usersCol, where('email', '==', email.trim().toLowerCase()));
-    const snap = await getDocs(qEmail);
-
-    if (!snap.empty) {
-      return { success: false, error: 'Já existe uma conta cadastrada com este e-mail.' };
-    }
-
-    const newId = 'user_' + Date.now();
-    const now = new Date().toISOString();
-
-    const newUser: UserAccount = {
-      id: newId,
-      username: username.trim(),
-      email: email.trim().toLowerCase(),
-      password: password.trim(),
-      role: 'customer',
-      status: 'pending',
-      downloadCredits: 0,
-      totalDownloads: 0,
-      licenseDays: 30,
-      licenseExpiresAt: calculateExpirationDate(30),
-      createdAt: now,
-    };
-
-    await setDoc(doc(db, 'userAccounts', newId), newUser);
-    return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message || 'Erro ao solicitar cadastro.' };
-  }
-}
-
-// Subscribe to a single user in real-time
-export function subscribeUser(userId: string, callback: (user: UserAccount | null) => void) {
-  const userRef = doc(db, 'userAccounts', userId);
-  return onSnapshot(
-    userRef,
-    (snap) => {
-      if (snap.exists()) {
-        callback({ ...(snap.data() as UserAccount), id: snap.id });
-      } else {
-        callback(null);
-      }
-    },
-    () => callback(null)
-  );
-}
-
-// Subscribe to all users (for Admin Dashboard)
-export function subscribeAllUsers(callback: (users: UserAccount[]) => void) {
-  const usersCol = collection(db, 'userAccounts');
-  return onSnapshot(
-    usersCol,
-    (snap) => {
-      const list: UserAccount[] = [];
-      snap.forEach((d) => {
-        list.push({ ...(d.data() as UserAccount), id: d.id });
-      });
-      // Sort: pending first, then by creation date
-      list.sort((a, b) => {
-        if (a.status === 'pending' && b.status !== 'pending') return -1;
-        if (b.status === 'pending' && a.status !== 'pending') return 1;
-        return (b.createdAt || '').localeCompare(a.createdAt || '');
-      });
-      callback(list);
-    },
-    (err) => {
-      console.warn('Real-time users error:', err);
-      callback([]);
-    }
-  );
-}
-
-// Admin: Create new user
-export async function adminCreateUser(data: {
-  username: string;
-  email: string;
-  password: string;
-  downloadCredits: number;
-  licenseDays: number;
-  role?: 'admin' | 'customer';
-}): Promise<{ success: boolean; error?: string }> {
-  try {
-    const newId = 'user_' + Date.now();
-    const now = new Date().toISOString();
-    const newUser: UserAccount = {
-      id: newId,
-      username: data.username.trim(),
-      email: data.email.trim().toLowerCase(),
-      password: data.password.trim(),
-      role: data.role || 'customer',
-      status: 'active',
-      downloadCredits: Number(data.downloadCredits) || 1,
-      totalDownloads: 0,
-      licenseDays: Number(data.licenseDays) || 30,
-      licenseExpiresAt: calculateExpirationDate(data.licenseDays),
-      createdAt: now,
-    };
-
-    await setDoc(doc(db, 'userAccounts', newId), newUser);
-    return { success: true };
-  } catch (err: any) {
-    return { success: false, error: err.message };
-  }
-}
-
-// Admin: Approve pending user and assign credits and license
-export async function adminApproveUser(
-  userId: string,
-  downloadCredits: number,
-  licenseDays: number
-): Promise<boolean> {
-  try {
-    await updateDoc(doc(db, 'userAccounts', userId), {
-      status: 'active',
-      downloadCredits: Number(downloadCredits) || 3,
-      licenseDays: Number(licenseDays) || 30,
-      licenseExpiresAt: calculateExpirationDate(licenseDays || 30),
-    });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Admin: Update user credits and license
-export async function adminUpdateUser(
-  userId: string,
-  updates: Partial<UserAccount>
-): Promise<boolean> {
-  try {
-    const cleanUpdates = { ...updates };
-    if (updates.licenseDays && !updates.licenseExpiresAt) {
-      cleanUpdates.licenseExpiresAt = calculateExpirationDate(updates.licenseDays);
-    }
-    await updateDoc(doc(db, 'userAccounts', userId), cleanUpdates);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Admin: Delete user
-export async function adminDeleteUser(userId: string): Promise<boolean> {
-  try {
-    await deleteDoc(doc(db, 'userAccounts', userId));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-// Consume download credit
-export async function consumeDownloadCredit(
-  userId: string,
-  gameId: string
-): Promise<{ success: boolean; remainingCredits: number; message?: string }> {
-  try {
-    const userRef = doc(db, 'userAccounts', userId);
-    const snap = await getDoc(userRef);
-
-    if (!snap.exists()) {
-      return { success: false, remainingCredits: 0, message: 'Usuário não encontrado.' };
-    }
-
-    const userData = snap.data() as UserAccount;
-
-    // Admin has infinite downloads
-    if (userData.role === 'admin') {
-      await incrementDownload(gameId);
-      return { success: true, remainingCredits: 9999 };
-    }
-
-    // Check expiration
-    if (getDaysRemaining(userData.licenseExpiresAt) <= 0) {
-      return {
-        success: false,
-        remainingCredits: userData.downloadCredits,
-        message: 'Sua licença expirou. Entre em contato para renovar seu acesso.',
-      };
-    }
-
-    // Check credits
-    if (userData.downloadCredits <= 0) {
-      return {
-        success: false,
-        remainingCredits: 0,
-        message: 'Seus créditos de download acabaram. Solicite novos créditos ao administrador.',
-      };
-    }
-
-    // Deduct 1 credit and add 1 download
-    const nextCredits = userData.downloadCredits - 1;
-    await updateDoc(userRef, {
-      downloadCredits: increment(-1),
-      totalDownloads: increment(1),
-    });
-
-    // Increment game download counter
-    await incrementDownload(gameId);
-
-    return { success: true, remainingCredits: nextCredits };
-  } catch (err: any) {
-    return { success: false, remainingCredits: 0, message: err.message };
-  }
-}
-
-// Real-time games list
+// Subscribe to games with real-time updates and dynamic sync of target URLs
 export function subscribeGames(callback: (games: GameItem[]) => void) {
   const gamesCollection = collection(db, 'games');
 
@@ -468,11 +118,38 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
         callback(INITIAL_GAMES);
       } else {
         const games: GameItem[] = [];
+        const existingIds = new Set<string>();
         snapshot.forEach((d) => {
+          existingIds.add(d.id);
           games.push({ id: d.id, ...(d.data() as Omit<GameItem, 'id'>) });
         });
-        const order = ['wolverine', '007', 'onimusha'];
-        games.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+
+        // Ensure newly introduced games and updated links sync into Firestore
+        INITIAL_GAMES.forEach((initGame) => {
+          if (!existingIds.has(initGame.id)) {
+            setDoc(doc(db, 'games', initGame.id), initGame).catch(console.error);
+            games.push(initGame);
+          } else {
+            const found = games.find((g) => g.id === initGame.id);
+            if (found && (found.driveUrl !== initGame.driveUrl || found.coverUrl !== initGame.coverUrl || found.realName !== initGame.realName)) {
+              found.driveUrl = initGame.driveUrl;
+              found.realName = initGame.realName;
+              found.title = initGame.title;
+              found.coverUrl = initGame.coverUrl;
+              setDoc(doc(db, 'games', initGame.id), initGame, { merge: true }).catch(console.error);
+            }
+          }
+        });
+
+        const order = ['silenthill_townfall', 'wolverine', '007', 'onimusha'];
+        games.sort((a, b) => {
+          const idxA = order.indexOf(a.id);
+          const idxB = order.indexOf(b.id);
+          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+          if (idxA !== -1) return -1;
+          if (idxB !== -1) return 1;
+          return 0;
+        });
         callback(games);
       }
     },
@@ -504,7 +181,7 @@ export async function incrementDownload(gameId: string) {
 
 // Real-time community messages
 export function subscribeSupporterMessages(callback: (messages: SupporterMessageItem[]) => void) {
-  const q = query(collection(db, 'supporterMessages'), orderBy('createdAt', 'desc'), limit(15));
+  const q = query(collection(db, 'supporterMessages'), orderBy('timestamp', 'desc'), limit(15));
   return onSnapshot(
     q,
     (snapshot) => {
@@ -515,19 +192,18 @@ export function subscribeSupporterMessages(callback: (messages: SupporterMessage
       callback(messages);
     },
     () => {
-      callback([
-        { id: '1', name: 'Lucas Gamer', message: 'Marvel Wolverine rodando top demais!', createdAt: 'Hoje' },
-        { id: '2', name: 'Gabriel PS5', message: 'Melhor catálogo de jogos, parabéns Henrique!', createdAt: 'Hoje' },
-      ]);
+      callback([]);
     }
   );
 }
 
-export async function addSupporterMessage(name: string, message: string) {
+// Add community game request message
+export async function addSupporterMessage(name: string, message: string, gameRequested?: string) {
   try {
     await addDoc(collection(db, 'supporterMessages'), {
-      name: name.trim().slice(0, 50),
-      message: message.trim().slice(0, 280),
+      name: name.trim(),
+      message: message.trim(),
+      gameRequested: gameRequested ? gameRequested.trim() : message.trim(),
       createdAt: new Date().toLocaleDateString('pt-BR'),
       timestamp: serverTimestamp(),
     });
@@ -566,7 +242,6 @@ export function subscribeSystemSettings(callback: (settings: SystemSettings) => 
           updatedAt: data.updatedAt,
         });
       } else {
-        // Automatically save initial default settings
         setDoc(docRef, DEFAULT_SYSTEM_SETTINGS, { merge: true }).catch(() => {});
         callback(DEFAULT_SYSTEM_SETTINGS);
       }
@@ -577,7 +252,7 @@ export function subscribeSystemSettings(callback: (settings: SystemSettings) => 
   );
 }
 
-// Update system settings (Admin only)
+// Update system settings
 export async function updateSystemSettings(
   updates: Partial<SystemSettings>
 ): Promise<{ success: boolean; error?: string }> {
@@ -597,4 +272,3 @@ export async function updateSystemSettings(
     return { success: false, error: err.message || 'Erro ao salvar configurações.' };
   }
 }
-

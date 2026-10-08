@@ -1,14 +1,13 @@
 import React, { useState, useRef } from 'react';
-import { Download, Heart, Sparkles, Lock } from 'lucide-react';
+import { Download, Heart, Sparkles } from 'lucide-react';
 import { GameItem, likeGame } from '../lib/firebase';
 
 interface GameCardProps {
   game: GameItem;
   onDownload: (game: GameItem) => void;
-  isGuest?: boolean;
 }
 
-export const GameCard: React.FC<GameCardProps> = ({ game, onDownload, isGuest = false }) => {
+export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
   const [imgError, setImgError] = useState(false);
   const [hasLiked, setHasLiked] = useState(false);
   const [rotateX, setRotateX] = useState(0);
@@ -94,7 +93,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload, isGuest = 
       <div
         onClick={() => onDownload(game)}
         className="relative w-full aspect-[3/4] max-h-[360px] rounded-2xl overflow-hidden bg-black/60 border-2 border-white/10 group-hover:border-amber-400/50 shadow-2xl cursor-pointer mb-5"
-        title={isGuest ? 'Acesso restrito: Faça login para baixar' : `Clique para baixar ${game.realName}`}
+        title={`Clique para baixar ${game.realName}`}
       >
         {/* Official PS5 Header Bar on Cover */}
         <div className="absolute top-0 inset-x-0 z-20 h-6 bg-white flex items-center justify-between px-3 text-black">
@@ -126,13 +125,11 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload, isGuest = 
 
         {/* Overlay Action Prompt on Hover */}
         <div className="absolute inset-0 bg-black/55 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 z-20">
-          <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform ${
-            isGuest ? 'bg-purple-600 text-white' : 'bg-amber-400 text-black'
-          }`}>
-            {isGuest ? <Lock className="w-5 h-5" /> : <Download className="w-5 h-5" />}
+          <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform bg-amber-400 text-black">
+            <Download className="w-5 h-5" />
           </div>
           <span className="text-white font-extrabold text-xs uppercase tracking-wider bg-black/80 px-3.5 py-1.5 rounded-full border border-white/20">
-            {isGuest ? 'Exclusivo para Apoiadores' : 'Baixar Agora'}
+            &quot;COMPRAR&quot;
           </span>
         </div>
       </div>
@@ -143,7 +140,6 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload, isGuest = 
           <span className="text-[10px] font-bold tracking-widest uppercase text-amber-400 block mb-1">
             Jogo Completo Original
           </span>
-          {/* REAL NAME */}
           <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm">
             {game.realName}
           </h3>
@@ -156,26 +152,15 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload, isGuest = 
         )}
       </div>
 
-      {/* BAIXAR OR LOGIN TO DOWNLOAD BUTTON */}
-      {isGuest ? (
-        <button
-          type="button"
-          onClick={() => onDownload(game)}
-          className="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-purple-900/60 via-purple-800/60 to-indigo-900/60 hover:from-purple-700 hover:to-indigo-700 border border-purple-500/40 text-purple-200 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md"
-        >
-          <Lock className="w-4 h-4 text-purple-300" />
-          <span>Fazer Login para Baixar</span>
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={() => onDownload(game)}
-          className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group"
-        >
-          <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          <span>BAIXAR</span>
-        </button>
-      )}
+      {/* DIRECT BUTTON */}
+      <button
+        type="button"
+        onClick={() => onDownload(game)}
+        className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+      >
+        <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
+        <span>&quot;COMPRAR&quot;</span>
+      </button>
     </div>
   );
 };
