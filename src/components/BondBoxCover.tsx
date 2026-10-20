@@ -219,7 +219,7 @@ export const BondBoxCover: React.FC<BondBoxCoverProps> = ({
             <ShoppingCart className="w-5 h-5" />
           </div>
           <span className="text-white font-extrabold text-sm uppercase tracking-wider">
-            Comprar 007
+            Fazer Download
           </span>
         </div>
       </a>

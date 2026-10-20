@@ -272,7 +272,7 @@ export const OnimushaBoxCover: React.FC<OnimushaBoxCoverProps> = ({
             <ShoppingCart className="w-5 h-5" />
           </div>
           <span className="text-white font-extrabold text-sm uppercase tracking-wider">
-            Comprar Onimusha
+            Fazer Download
           </span>
         </div>
       </a>

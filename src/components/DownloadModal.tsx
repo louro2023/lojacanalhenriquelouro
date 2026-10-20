@@ -72,7 +72,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md rounded-3xl bg-[#0e121a] border border-amber-500/35 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(245,158,11,0.2)] p-6 sm:p-7 z-10 animate-in fade-in zoom-in-95 duration-200 text-center">
+      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#0c1424] via-[#090f1a] to-[#050811] border border-cyan-500/35 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(0,210,255,0.25)] p-6 sm:p-7 z-10 animate-in fade-in zoom-in-95 duration-200 text-center">
         
         {/* Close Button */}
         <button
@@ -85,13 +85,13 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
         </button>
 
         {/* Download Icon with Glow */}
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto mb-3 shadow-inner">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/40 text-cyan-400 flex items-center justify-center mx-auto mb-3 shadow-[0_0_15px_rgba(0,210,255,0.2)]">
           <Download className="w-7 h-7" />
         </div>
 
         {/* Game Title */}
-        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-1">
-          <Sparkles className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-cyan-300 uppercase tracking-widest mb-1">
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
           <span>{targetGameName}</span>
         </div>
 
@@ -102,6 +102,13 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
         <p className="text-xs text-slate-300 mt-1 mb-5 leading-relaxed">
           Link oficial de alta velocidade no servidor seguro. Clique no botão abaixo para iniciar o download ou copie o link direto.
         </p>
+
+        {/* Informação sobre Senha de Descompactação */}
+        <div className="p-3 mb-4 rounded-xl bg-cyan-500/15 border border-cyan-500/40 text-center animate-in fade-in shadow-[0_0_15px_rgba(0,210,255,0.15)]">
+          <p className="text-xs font-bold text-cyan-200">
+            A senha para descompactar podem ser <span className="text-white font-black">&quot;SuperPSX ou DLPSGAME.COM OU [DLPSGAME.COM]&quot;</span>
+          </p>
+        </div>
 
         {/* Success Feedback if downloaded */}
         {downloadStarted && (
@@ -122,10 +129,10 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           <button
             type="button"
             onClick={handleDownloadClick}
-            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Download className="w-4 h-4" />
-            <span>Baixar Agora (Link Direto)</span>
+            <span>Fazer Download Agora (Link Direto)</span>
             <ExternalLink className="w-3.5 h-3.5 opacity-70" />
           </button>
 
@@ -150,13 +157,13 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
           {/* Support prompt banner inside modal */}
           {onOpenSupport && (
-            <div className="mt-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
-              <div className="flex items-center justify-center gap-1.5 text-amber-300 font-bold text-xs mb-1">
-                <Heart className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+            <div className="mt-4 p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/25 text-center shadow-[0_0_15px_rgba(0,210,255,0.1)]">
+              <div className="flex items-center justify-center gap-1.5 text-cyan-300 font-bold text-xs mb-1">
+                <Heart className="w-3.5 h-3.5 fill-cyan-400 text-cyan-400" />
                 <span>Gostou do catálogo?</span>
               </div>
               <p className="text-[11px] text-slate-300 mb-2">
-                Ajude o canal Henrique Games com uma contribuição voluntária no PIX.
+                Ajude o canal Henrique Louro com uma contribuição voluntária no PIX.
               </p>
               <button
                 type="button"
@@ -164,7 +171,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                   onClose();
                   onOpenSupport();
                 }}
-                className="py-1.5 px-3 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-[11px] uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-1"
+                className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:brightness-110 text-black font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-1 shadow-md shadow-cyan-400/20"
               >
                 <span>Apoiar o Projeto (PIX)</span>
               </button>

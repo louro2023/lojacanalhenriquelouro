@@ -203,7 +203,7 @@ export const WolverineBoxCover: React.FC<WolverineBoxCoverProps> = ({
             <ShoppingCart className="w-5 h-5" />
           </div>
           <span className="text-white font-extrabold text-sm uppercase tracking-wider">
-            Comprar Agora
+            Fazer Download
           </span>
         </div>
       </a>

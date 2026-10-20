@@ -55,6 +55,54 @@ export interface SupporterMessageItem {
 
 export const INITIAL_GAMES: GameItem[] = [
   {
+    id: 'resident_evil_4_remake',
+    title: 'Resident Evil 4 Remake',
+    realName: 'Resident Evil 4 Remake LZ4',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/L7Y7Zb1JuR#LIZARD',
+    coverUrl: '/covers/resident_evil_4_remake.jpg',
+    likes: 189,
+    downloads: 412,
+    developer: 'Capcom',
+    description: 'Sobrevivência visceral e terror eletrizante com Leon S. Kennedy totalmente remasterizado em alta fidelidade no PS5 no formato LZ4.',
+  },
+  {
+    id: 'hogwarts_legacy',
+    title: 'Hogwarts Legacy',
+    realName: 'Hogwarts Legacy LZ4',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/KWWwzvGoU5#LIZARD',
+    coverUrl: '/covers/hogwarts_legacy.png',
+    likes: 215,
+    downloads: 540,
+    developer: 'Avalanche Software / Warner Bros.',
+    description: 'Explore o mundo bruxo em Hogwarts no século XIX com feitiços, poções e aventuras de mundo aberto no PlayStation 5 formato LZ4.',
+  },
+  {
+    id: 'resident_evil_requiem',
+    title: 'Resident Evil Requiem',
+    realName: 'Resident Evil Requiem LZ4',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/qf7HV7WiiK#LIZARD',
+    coverUrl: '/covers/resident_evil_requiem.jpg',
+    likes: 167,
+    downloads: 328,
+    developer: 'Capcom',
+    description: 'O novo capítulo de horror e sobrevivência visceral no PlayStation 5 com atmosfera intensa e ameaças biológicas formato LZ4.',
+  },
+  {
+    id: 'black_myth_wukong',
+    title: 'Black Myth: Wukong',
+    realName: 'Black Myth Wukong LZ4',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/5dwq5Jznsa#LIZARD',
+    coverUrl: '/covers/black_myth_wukong.jpg',
+    likes: 298,
+    downloads: 680,
+    developer: 'Game Science',
+    description: 'Ação RPG espetacular no PS5 baseado na lenda de Sun Wukong e Jornada ao Oeste com combates fluidos e gráficos de ponta formato LZ4.',
+  },
+  {
     id: 'silenthill_townfall',
     title: 'Silent Hill: Townfall',
     realName: 'Silent.Hill.Townfall.exfat',
@@ -141,7 +189,16 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
           }
         });
 
-        const order = ['silenthill_townfall', 'wolverine', '007', 'onimusha'];
+        const order = [
+          'resident_evil_4_remake',
+          'hogwarts_legacy',
+          'resident_evil_requiem',
+          'black_myth_wukong',
+          'silenthill_townfall',
+          'wolverine',
+          '007',
+          'onimusha',
+        ];
         games.sort((a, b) => {
           const idxA = order.indexOf(a.id);
           const idxB = order.indexOf(b.id);

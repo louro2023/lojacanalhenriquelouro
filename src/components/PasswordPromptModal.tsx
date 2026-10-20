@@ -57,7 +57,7 @@ export const PasswordPromptModal: React.FC<PasswordPromptModalProps> = ({
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#131724] via-[#0e121b] to-[#07090e] border border-amber-500/40 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(245,158,11,0.25)] p-6 sm:p-7 z-10 animate-in fade-in zoom-in-95 duration-200 text-center">
+      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#0c1424] via-[#090f1a] to-[#050811] border border-cyan-500/35 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_35px_rgba(0,210,255,0.25)] p-6 sm:p-7 z-10 animate-in fade-in zoom-in-95 duration-200 text-center">
         
         {/* Close Button */}
         <button
@@ -69,14 +69,18 @@ export const PasswordPromptModal: React.FC<PasswordPromptModalProps> = ({
           <X className="w-5 h-5" />
         </button>
 
-        {/* Lock Icon */}
-        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto mb-3 shadow-inner">
-          <Lock className="w-7 h-7" />
+        {/* Channel Logo Icon */}
+        <div className="relative mx-auto mb-3 w-14 h-14">
+          <img
+            src="/logo_canal.png"
+            alt="Logo Canal Henrique Louro"
+            className="w-14 h-14 rounded-full border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,210,255,0.5)] object-cover"
+          />
         </div>
 
         {/* Game Title Tag */}
-        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-400 uppercase tracking-widest mb-1">
-          <Sparkles className="w-3.5 h-3.5" />
+        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-cyan-300 uppercase tracking-widest mb-1">
+          <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
           <span>{game.realName}</span>
         </div>
 
@@ -99,7 +103,7 @@ export const PasswordPromptModal: React.FC<PasswordPromptModalProps> = ({
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
-            <KeyRound className="w-4 h-4 text-amber-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <KeyRound className="w-4 h-4 text-cyan-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               autoFocus
@@ -109,17 +113,17 @@ export const PasswordPromptModal: React.FC<PasswordPromptModalProps> = ({
                 setPassword(e.target.value);
                 if (error) setError('');
               }}
-              className="w-full text-sm pl-10 pr-4 py-3 rounded-xl bg-black/60 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors font-medium text-center"
+              className="w-full text-sm pl-10 pr-4 py-3 rounded-xl bg-black/60 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-cyan-400 transition-colors font-medium text-center shadow-inner"
             />
           </div>
 
-          <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 font-medium">
-            💡 Digite a senha informada no canal Henrique Games para desbloquear o link.
+          <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[11px] text-cyan-200 font-medium">
+            💡 Digite a senha informada no canal Henrique Louro para desbloquear o link.
           </div>
 
           <button
             type="submit"
-            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 hover:brightness-110 active:scale-95 text-black font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-400/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:brightness-110 active:scale-95 text-black font-black text-xs uppercase tracking-wider shadow-lg shadow-cyan-400/25 transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>Desbloquear Download</span>
             <ArrowRight className="w-4 h-4" />

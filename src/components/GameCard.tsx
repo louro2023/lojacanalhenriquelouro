@@ -56,16 +56,16 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
         }, ${isHovered ? 1.02 : 1}, 1)`,
         transition: isHovered ? 'transform 0.1s ease-out' : 'transform 0.4s ease-out',
       }}
-      className="relative w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#131722] via-[#0d1017] to-[#080a0f] border border-white/10 hover:border-amber-400/40 shadow-[0_15px_40px_rgba(0,0,0,0.85)] p-5 flex flex-col items-center text-center transition-all group overflow-hidden"
+      className="relative w-full max-w-sm rounded-3xl bg-gradient-to-b from-[#0e1627] via-[#09101c] to-[#050811] border border-cyan-500/20 hover:border-cyan-400/60 shadow-[0_15px_40px_rgba(0,0,0,0.85),0_0_20px_rgba(0,210,255,0.08)] p-5 flex flex-col items-center text-center transition-all group overflow-hidden"
     >
       {/* Ambient card corner glow */}
-      <div className="absolute -top-16 -right-16 w-36 h-36 bg-blue-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-500/15 transition-all" />
+      <div className="absolute -top-16 -right-16 w-36 h-36 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-cyan-500/25 transition-all" />
 
       {/* TOP PS5 HEADER BANNER */}
       <div className="w-full flex items-center justify-between mb-4 pb-2.5 border-b border-white/10">
         {/* PS5 Official-style badge */}
         <div className="flex items-center gap-2">
-          <div className="px-2.5 py-1 rounded-md bg-white text-black font-black text-xs tracking-tighter uppercase shadow-sm flex items-center gap-1">
+          <div className="px-2.5 py-1 rounded-md bg-white text-black font-black text-xs tracking-tighter uppercase shadow-[0_0_10px_rgba(255,255,255,0.3)] flex items-center gap-1">
             <span>PS5</span>
           </div>
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">
@@ -92,7 +92,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
       {/* REAL GAME IMAGE COVER CONTAINER */}
       <div
         onClick={() => onDownload(game)}
-        className="relative w-full aspect-[3/4] max-h-[360px] rounded-2xl overflow-hidden bg-black/60 border-2 border-white/10 group-hover:border-amber-400/50 shadow-2xl cursor-pointer mb-5"
+        className="relative w-full aspect-[3/4] max-h-[360px] rounded-2xl overflow-hidden bg-black/60 border-2 border-cyan-500/30 group-hover:border-cyan-400/80 shadow-2xl cursor-pointer mb-5"
         title={`Clique para baixar ${game.realName}`}
       >
         {/* Official PS5 Header Bar on Cover */}
@@ -114,7 +114,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
           />
         ) : (
           <div className="w-full h-full pt-6 flex flex-col items-center justify-center p-4 bg-gradient-to-b from-slate-900 to-black text-slate-400">
-            <Sparkles className="w-8 h-8 text-amber-400 mb-2" />
+            <Sparkles className="w-8 h-8 text-cyan-400 mb-2" />
             <span className="text-sm font-bold text-white uppercase">{game.realName}</span>
             <span className="text-xs text-slate-400">Edição Oficial PS5</span>
           </div>
@@ -123,13 +123,23 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
         {/* Subtle Dark Gradient at bottom of image for contrast */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
+        {/* Informação sobre a senha de descompactação na capa */}
+        <div className="absolute bottom-0 inset-x-0 z-20 bg-black/90 backdrop-blur-md border-t border-cyan-400/60 px-2.5 py-1.5 text-center shadow-[0_-5px_15px_rgba(0,0,0,0.7)]">
+          <p className="text-[10px] sm:text-[11px] font-extrabold text-cyan-300 leading-tight">
+            A senha para descompactar podem ser &quot;SuperPSX ou DLPSGAME.COM OU [DLPSGAME.COM]&quot;
+          </p>
+        </div>
+
         {/* Overlay Action Prompt on Hover */}
-        <div className="absolute inset-0 bg-black/55 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 z-20">
-          <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform bg-amber-400 text-black">
+        <div className="absolute inset-0 bg-black/75 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-4 z-30">
+          <div className="w-12 h-12 rounded-full flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform bg-cyan-400 text-black">
             <Download className="w-5 h-5" />
           </div>
           <span className="text-white font-extrabold text-xs uppercase tracking-wider bg-black/80 px-3.5 py-1.5 rounded-full border border-white/20">
-            &quot;COMPRAR&quot;
+            Fazer Download
+          </span>
+          <span className="text-[10px] text-cyan-300 font-bold text-center px-2 mt-1">
+            Senha: SuperPSX ou DLPSGAME.COM OU [DLPSGAME.COM]
           </span>
         </div>
       </div>
@@ -137,7 +147,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
       {/* REAL GAME NAME & DETAILS */}
       <div className="w-full text-center mb-5 flex-1 flex flex-col justify-between">
         <div>
-          <span className="text-[10px] font-bold tracking-widest uppercase text-amber-400 block mb-1">
+          <span className="text-[10px] font-bold tracking-widest uppercase text-cyan-400 block mb-1">
             Jogo Completo Original
           </span>
           <h3 className="text-xl sm:text-2xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm">
@@ -150,16 +160,23 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
             {game.description}
           </p>
         )}
+
+        {/* Informação destacada da senha de descompactação */}
+        <div className="mt-3 px-3 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-center shadow-[0_0_15px_rgba(0,210,255,0.1)]">
+          <p className="text-[11px] text-cyan-200 font-semibold leading-snug">
+            🔑 A senha para descompactar podem ser <span className="text-white font-bold">&quot;SuperPSX ou DLPSGAME.COM OU [DLPSGAME.COM]&quot;</span>
+          </p>
+        </div>
       </div>
 
       {/* DIRECT BUTTON */}
       <button
         type="button"
         onClick={() => onDownload(game)}
-        className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.5)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+        className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:shadow-[0_0_30px_rgba(0,210,255,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group"
       >
         <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
-        <span>&quot;COMPRAR&quot;</span>
+        <span>Fazer Download</span>
       </button>
     </div>
   );
