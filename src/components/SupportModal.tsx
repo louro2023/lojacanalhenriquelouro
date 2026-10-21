@@ -94,16 +94,34 @@ export const SupportModal: React.FC<SupportModalProps> = ({
         {/* Tagline */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-[11px] font-bold text-cyan-300 uppercase tracking-widest mb-2 shadow-[0_0_10px_rgba(0,210,255,0.2)]">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Apoie o Projeto Canal Henrique Louro</span>
+          <span>Apoio Opcional ao Projeto</span>
         </div>
 
         <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white uppercase tracking-tight font-sans drop-shadow-sm mb-2">
           LOJA DE JOGOS CANAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">HENRIQUE LOURO</span>
         </h2>
 
-        <p className="text-xs sm:text-sm text-slate-300 mb-4 leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-300 mb-3 leading-relaxed">
           Para continuarmos trazendo novos jogos de <strong>PlayStation 5</strong> testados e funcionando prontos para instalação no console, pedimos o seu apoio voluntário para fortalecer o projeto!
         </p>
+
+        {/* Aviso de Doação NÃO Obrigatória e Sem Comprovante */}
+        <div className="p-3.5 mb-4 rounded-2xl bg-cyan-950/40 border border-cyan-500/30 text-left text-xs text-slate-200 shadow-md">
+          <div className="flex items-start gap-2.5">
+            <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+            <div className="leading-relaxed space-y-1">
+              <p className="font-bold text-cyan-300">
+                ✨ A doação NÃO é obrigatória:
+              </p>
+              <p className="text-slate-300">
+                O catálogo de jogos é <strong>100% gratuito</strong> para inscritos! Apenas doe se puder e quiser ajudar de coração.
+              </p>
+              <p className="text-emerald-400 font-semibold text-[11px]">
+                ✓ Não é necessário enviar nenhum comprovante! Ao clicar em doar, o catálogo de jogos abrirá automaticamente.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* MENSAGEM DE ERRO CASO NÃO ESTEJA INSCRITO */}
         {subscribeError && (
@@ -162,22 +180,28 @@ export const SupportModal: React.FC<SupportModalProps> = ({
 
           {/* Os dois links na doação: R$ 5,00 ou Outro Valor */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
-            {/* Opção 1: R$ 5,00 */}
+            {/* Opção 1: R$ 5,00 - Ao clicar, abre o PIX e abre o catálogo imediatamente */}
             <a
               href={PIX_5_REAIS_LINK}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                onClose();
+              }}
               className="py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:brightness-110 active:scale-95 text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md shadow-cyan-400/25 cursor-pointer"
             >
               <ExternalLink className="w-4 h-4" />
               <span>Doar R$ 5,00 (PIX)</span>
             </a>
 
-            {/* Opção 2: Outro Valor */}
+            {/* Opção 2: Outro Valor - Ao clicar, abre o PIX e abre o catálogo imediatamente */}
             <a
               href={PIX_OUTRO_VALOR_LINK}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => {
+                onClose();
+              }}
               className="py-3 px-4 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all shadow-md shadow-purple-600/30 cursor-pointer"
             >
               <Heart className="w-4 h-4" />

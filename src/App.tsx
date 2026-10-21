@@ -12,6 +12,7 @@ import {
   Lock,
   Youtube,
   ShieldCheck,
+  ThumbsUp,
 } from 'lucide-react';
 import {
   GameItem,
@@ -119,6 +120,19 @@ export default function App() {
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
               <span>Inscrito Verificado</span>
             </div>
+
+            {/* Botão de Atalho: Peça seu Game Aqui!! */}
+            <button
+              type="button"
+              onClick={() => {
+                document.getElementById('peca-seu-game')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              title="Ir para o Mural de Votação e Pedidos de Jogos"
+              className="hidden sm:inline-flex items-center gap-1.5 py-2 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 active:scale-95 text-cyan-300 hover:text-white font-bold text-xs border border-cyan-500/30 shadow-[0_0_12px_rgba(0,210,255,0.15)] transition-all cursor-pointer"
+            >
+              <ThumbsUp className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Peça seu Game 👍</span>
+            </button>
 
             {/* Botão de Apoiar o Projeto (PIX) */}
             <button
