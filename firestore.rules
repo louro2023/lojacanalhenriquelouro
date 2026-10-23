@@ -35,5 +35,22 @@ service cloud.firestore {
                     request.resource.data.message.size() <= 300;
       allow update, delete: if false;
     }
+
+    // Community Game Requests with Thumbs-up / Curtidas Voting & Ranking
+    match /gameRequests/{requestId} {
+      allow read: if true;
+      allow create: if request.resource.data.gameTitle is string &&
+                    request.resource.data.gameTitle.size() > 0 &&
+                    request.resource.data.gameTitle.size() <= 100 &&
+                    request.resource.data.userName is string &&
+                    request.resource.data.userName.size() > 0 &&
+                    request.resource.data.userName.size() <= 60 &&
+                    request.resource.data.likes is int &&
+                    request.resource.data.likes >= 0;
+      allow update: if request.resource.data.likes is int &&
+                    request.resource.data.likes >= 0 &&
+                    request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']);
+      allow delete: if false;
+    }
   }
 }

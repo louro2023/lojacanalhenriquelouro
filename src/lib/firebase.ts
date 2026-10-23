@@ -55,6 +55,66 @@ export interface SupporterMessageItem {
 
 export const INITIAL_GAMES: GameItem[] = [
   {
+    id: 'pragmata_deluxe',
+    title: 'Pragmata Deluxe Edition',
+    realName: 'PRAGMATA Deluxe Edition LZ4',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/1w1uP8UN6J',
+    coverUrl: '/covers/pragmata.jpg',
+    likes: 245,
+    downloads: 512,
+    developer: 'Capcom',
+    description: 'Aventura de ficção científica distópica na Lua com astronauta em exoesqueleto pesado e a misteriosa andróide Diana no PS5 formato LZ4.',
+  },
+  {
+    id: 'spiderman_2',
+    title: "Marvel's Spider-Man 2",
+    realName: "Marvel's Spider-Man 2 LZ4",
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/vLMCxg49mW#LIZARD',
+    coverUrl: '/covers/spiderman_2.jpg',
+    likes: 415,
+    downloads: 920,
+    developer: 'Insomniac Games / PlayStation Studios',
+    description: 'Peter Parker e Miles Morales enfrentam a fúria do simbionte Venom e Kraven o Caçador em Nova York no formato LZ4 otimizado para o PS5.',
+  },
+  {
+    id: 'astro_bot',
+    title: 'Astro Bot',
+    realName: 'Astro Bot LZ4',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/j8QaOtne1l#LIZARD',
+    coverUrl: '/covers/astro_bot.jpg',
+    likes: 388,
+    downloads: 840,
+    developer: 'Team Asobi / PlayStation Studios',
+    description: 'O premiado jogo do ano no PS5! Mais de 50 galáxias repletas de ação, homenagens icônicas ao PlayStation e uso genial do DualSense formato LZ4.',
+  },
+  {
+    id: 'ghost_of_yotei',
+    title: 'Ghost of Yôtei: Deluxe Edition',
+    realName: 'Ghost of Yotei: Deluxe Edition PFS',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/Q5dNUyZid1#PPSA26344',
+    coverUrl: '/covers/ghost_of_yotei.png',
+    likes: 295,
+    downloads: 580,
+    developer: 'Sucker Punch Productions / PlayStation Studios',
+    description: 'A aguardada sequência de Ghost of Tsushima! Acompanhe a jornada épica da guerreira Atsu nas terras selvagens do Monte Yôtei em 1603 formato PFS.',
+  },
+  {
+    id: 'spiderman_remastered',
+    title: "Marvel's Spider-Man Remastered",
+    realName: 'Marvels Spider Man Remastered',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/s1fzcUUOs0#LIZARD',
+    coverUrl: '/covers/spiderman_remastered.jpg',
+    likes: 324,
+    downloads: 780,
+    developer: 'Insomniac Games / PlayStation Studios',
+    description: 'A aventura definitiva de Peter Parker totalmente remasterizada a 60 FPS com Ray Tracing e a DLC A Cidade que Nunca Dorme no PlayStation 5.',
+  },
+  {
     id: 'resident_evil_4_remake',
     title: 'Resident Evil 4 Remake',
     realName: 'Resident Evil 4 Remake LZ4',
@@ -298,6 +358,11 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
         });
 
         const order = [
+          'pragmata_deluxe',
+          'spiderman_2',
+          'astro_bot',
+          'ghost_of_yotei',
+          'spiderman_remastered',
           'resident_evil_4_remake',
           'hogwarts_legacy',
           'resident_evil_requiem',
@@ -444,5 +509,162 @@ export async function updateSystemSettings(
   } catch (err: any) {
     console.error('Error updating system settings:', err);
     return { success: false, error: err.message || 'Erro ao salvar configurações.' };
+  }
+}
+
+// ========================================================
+// PEÇA SEU GAME AQUI!! - SISTEMA DE PEDIDOS, CURTIDAS E RANKING
+// ========================================================
+
+export interface GameRequestItem {
+  id: string;
+  gameTitle: string;
+  userName: string;
+  notes?: string;
+  likes: number;
+  status?: 'voting' | 'in_review' | 'testing' | 'added';
+  createdAt?: string;
+  timestamp?: any;
+}
+
+export const INITIAL_GAME_REQUESTS: GameRequestItem[] = [
+  {
+    id: 'req_gta_6',
+    gameTitle: 'Grand Theft Auto VI (GTA 6)',
+    userName: 'Pedro_GamerPS5',
+    notes: 'O lançamento mais aguardado no PS5! Testado com gráficos em alta resolução.',
+    likes: 428,
+    status: 'voting',
+    createdAt: 'Hoje',
+  },
+  {
+    id: 'req_gow_rag',
+    gameTitle: 'God of War Ragnarök (PT-BR)',
+    userName: 'Carlos_Spartan',
+    notes: 'Dublagem completa em português do Brasil e expansão Valhalla.',
+    likes: 356,
+    status: 'in_review',
+    createdAt: 'Hoje',
+  },
+  {
+    id: 'req_spiderman_2',
+    gameTitle: "Marvel's Spider-Man 2",
+    userName: 'Lucas_Teia',
+    notes: 'Peter Parker e Miles Morales juntos com trajes e missões desbloqueadas! (Adicionado ao Catálogo!)',
+    likes: 312,
+    status: 'added',
+    createdAt: 'Ontem',
+  },
+  {
+    id: 'req_elden_ring',
+    gameTitle: 'Elden Ring + Shadow of the Erdtree',
+    userName: 'SoulsMaster_BR',
+    notes: 'Com a expansão Shadow of the Erdtree testada funcionando no PS5.',
+    likes: 245,
+    status: 'voting',
+    createdAt: 'Ontem',
+  },
+  {
+    id: 'req_tlou_part1',
+    gameTitle: 'The Last of Us Part I Remake',
+    userName: 'Joel_Ellie_99',
+    notes: 'Remake da obra-prima com fidelidade visual fantástica.',
+    likes: 198,
+    status: 'in_review',
+    createdAt: '2 dias atrás',
+  },
+  {
+    id: 'req_ff7_rebirth',
+    gameTitle: 'Final Fantasy VII Rebirth',
+    userName: 'Cloud_Strife',
+    notes: 'A continuação grandiosa de Final Fantasy VII no PS5.',
+    likes: 174,
+    status: 'voting',
+    createdAt: '3 dias atrás',
+  },
+  {
+    id: 'req_cyberpunk',
+    gameTitle: 'Cyberpunk 2077: Phantom Liberty',
+    userName: 'V_NightCity',
+    notes: 'DLC Phantom Liberty e atualização gráfica de última geração.',
+    likes: 152,
+    status: 'voting',
+    createdAt: '4 dias atrás',
+  },
+  {
+    id: 'req_demons_souls',
+    gameTitle: "Demon's Souls Remake",
+    userName: 'Boletaria_Knight',
+    notes: 'Visual de cair o queixo da Bluepoint Games.',
+    likes: 139,
+    status: 'added',
+    createdAt: '5 dias atrás',
+  },
+];
+
+// Inscrição em tempo real para os pedidos de jogos ("Peça seu Game Aqui!!")
+export function subscribeGameRequests(callback: (requests: GameRequestItem[]) => void) {
+  const reqCollection = collection(db, 'gameRequests');
+  return onSnapshot(
+    reqCollection,
+    (snapshot) => {
+      if (snapshot.empty) {
+        INITIAL_GAME_REQUESTS.forEach((item) => {
+          setDoc(doc(db, 'gameRequests', item.id), {
+            gameTitle: item.gameTitle,
+            userName: item.userName,
+            notes: item.notes || '',
+            likes: item.likes,
+            status: item.status || 'voting',
+            createdAt: item.createdAt || 'Hoje',
+            timestamp: serverTimestamp(),
+          }).catch(console.error);
+        });
+        callback(INITIAL_GAME_REQUESTS);
+      } else {
+        const requests: GameRequestItem[] = [];
+        snapshot.forEach((d) => {
+          requests.push({ id: d.id, ...(d.data() as Omit<GameRequestItem, 'id'>) });
+        });
+        callback(requests);
+      }
+    },
+    (err) => {
+      console.warn('Erro ao carregar pedidos do Firestore, usando lista inicial:', err);
+      callback(INITIAL_GAME_REQUESTS);
+    }
+  );
+}
+
+// Adicionar um novo pedido de jogo no Firestore
+export async function addGameRequest(gameTitle: string, userName: string, notes?: string) {
+  try {
+    const docRef = await addDoc(collection(db, 'gameRequests'), {
+      gameTitle: gameTitle.trim(),
+      userName: userName.trim(),
+      notes: notes?.trim() || '',
+      likes: 1,
+      status: 'voting',
+      createdAt: new Date().toLocaleDateString('pt-BR'),
+      timestamp: serverTimestamp(),
+    });
+    return { success: true, id: docRef.id };
+  } catch (err: any) {
+    console.error('Erro ao adicionar pedido de jogo:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Dar joinha / curtir (ou remover curtida) em um pedido de jogo
+export async function likeGameRequest(requestId: string, delta: number = 1) {
+  try {
+    const reqRef = doc(db, 'gameRequests', requestId);
+    await updateDoc(reqRef, {
+      likes: increment(delta),
+    });
+    return true;
+  } catch (err) {
+    console.error('Erro ao curtir pedido de jogo:', err);
+    return false;
   }
 }
