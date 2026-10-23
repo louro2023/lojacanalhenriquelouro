@@ -45,7 +45,7 @@ export const WolverineBoxCover: React.FC<WolverineBoxCoverProps> = ({
 
   const handleClick = (e: React.MouseEvent) => {
     try {
-      window.open('https://meli.la/1KFizS8', '_blank', 'noopener,noreferrer');
+      window.open('https://meli.la/2EBwarN', '_blank', 'noopener,noreferrer');
     } catch {
       // ignore
     }

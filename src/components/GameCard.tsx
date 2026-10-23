@@ -7,7 +7,7 @@ interface GameCardProps {
   onDownload: (game: GameItem) => void;
 }
 
-export const MELI_SPONSOR_URL = 'https://meli.la/1KFizS8';
+export const MELI_SPONSOR_URL = 'https://meli.la/2EBwarN';
 
 export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
   const [imgError, setImgError] = useState(false);

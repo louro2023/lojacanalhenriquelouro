@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { GameCard } from './components/GameCard';
 import { DownloadModal } from './components/DownloadModal';
 import { SupportModal } from './components/SupportModal';
-import { DownloadManagerNotice } from './components/DownloadManagerNotice';
 import { RealtimeSupporterBoard } from './components/RealtimeSupporterBoard';
 import { SiteAccessGate } from './components/SiteAccessGate';
 import {
@@ -151,7 +150,7 @@ export default function App() {
           <div className="flex items-center gap-2 justify-center sm:justify-start">
             <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
             <span>
-              Catálogo de jogos liberado para inscritos! Recomendamos instalar um gerenciador de download para velocidade máxima.
+              Catálogo de jogos liberado para inscritos! Aproveite os lançamentos testados e funcionando no PS5.
             </span>
           </div>
 
@@ -191,7 +190,7 @@ export default function App() {
                 Jogos Testados &amp; Prontos para PS5
               </h2>
               <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                Acesse os melhores jogos com tutoriais exclusivos e suporte direto do Canal Henrique Louro!
+                Acesse os melhores jogos testados com suporte direto do Canal Henrique Louro!
               </p>
             </div>
           </div>
@@ -211,9 +210,6 @@ export default function App() {
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl mb-8 leading-relaxed">
             Confira abaixo os lançamentos disponíveis no catálogo da <strong>LOJA DE JOGOS CANAL HENRIQUE LOURO</strong>. Clique no jogo desejado para iniciar o download oficial.
           </p>
-
-          {/* SESSÃO: GERENCIADORES DE DOWNLOAD RECOMENDADOS E VÍDEO TUTORIAL */}
-          <DownloadManagerNotice />
 
           {/* GAMES SHOWCASE GRID */}
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch justify-items-center mb-6">

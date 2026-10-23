@@ -21,7 +21,7 @@ interface DownloadModalProps {
   onOpenSupport?: () => void;
 }
 
-export const MELI_SPONSOR_URL = 'https://meli.la/1KFizS8';
+export const MELI_SPONSOR_URL = 'https://meli.la/2EBwarN';
 
 export const DownloadModal: React.FC<DownloadModalProps> = ({
   isOpen,
@@ -197,7 +197,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           )}
 
           <p className="text-[11px] text-slate-400 pt-1 leading-relaxed">
-            💡 Após baixar, basta seguir o tutorial de instalação no console PS5.
+            💡 Jogo 100% testado e funcionando pronto para instalação no console PS5.
           </p>
         </div>
 
