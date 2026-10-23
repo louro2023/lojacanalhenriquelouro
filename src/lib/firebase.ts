@@ -32,6 +32,17 @@ export async function testFirebaseConnection(): Promise<boolean> {
   }
 }
 
+export interface PartnerCredit {
+  name: string;
+  url: string;
+  channelHandle?: string;
+}
+
+export interface GameExtraLink {
+  name: string;
+  url: string;
+}
+
 export interface GameItem {
   id: string;
   title: string;
@@ -43,7 +54,15 @@ export interface GameItem {
   downloads: number;
   developer?: string;
   description?: string;
+  partnerCredit?: PartnerCredit;
+  extraLinks?: GameExtraLink[];
 }
+
+export const RAFAEL_PARTNER_CREDIT: PartnerCredit = {
+  name: 'Rafael',
+  url: 'https://youtube.com/@rafael27464?si=UkDmNsMOXMXCPKia',
+  channelHandle: '@rafael27464',
+};
 
 export interface SupporterMessageItem {
   id: string;
@@ -318,6 +337,256 @@ export const INITIAL_GAMES: GameItem[] = [
     developer: 'Housemarque / PlayStation Studios',
     description: 'Quebre o ciclo temporal em Atropos neste aclamado shooter roguelike com áudio 3D imersivo e resposta tátil DualSense no PS5 formato PFS.',
   },
+  {
+    id: 'gow_sons_of_sparta',
+    title: 'God of War Sons of Sparta',
+    realName: 'God of War: Sons of Sparta',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/4fxzqlwssyvj',
+    coverUrl: '/covers/gow_sons_of_sparta.jpg',
+    likes: 364,
+    downloads: 710,
+    developer: 'Santa Monica Studio / PlayStation',
+    description: 'A lendária e brutal jornada espartana de Kratos com combates épicos e ação implacável no PlayStation 5.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'ea_sports_fc_27',
+    title: 'EA Sports 27 Ffpfsc',
+    realName: 'EA SPORTS FC 27 FFPFSC + Unlocker',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/zoy1shzbvb37',
+    coverUrl: '/covers/ea_sports_fc_27.jpg',
+    likes: 420,
+    downloads: 890,
+    developer: 'EA Sports',
+    description: 'A nova era do futebol virtual com mecânicas aprimoradas, elencos atualizados e pacote de desbloqueio incluso.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+    extraLinks: [
+      {
+        name: 'Download Unlocker (FC27Unlock.pkg)',
+        url: 'https://vik1ngfile.site/f/R89RA8lK5z#FC27Unlock.pkg',
+      },
+    ],
+  },
+  {
+    id: 'the_witcher_remastered',
+    title: 'The Witcher Remastered',
+    realName: 'The Witcher Remastered',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/jknlzg9ohtp3',
+    coverUrl: '/covers/the_witcher_remastered.jpg',
+    likes: 310,
+    downloads: 640,
+    developer: 'CD Projekt RED',
+    description: 'Geralt de Rivia em visuais refeitos em alta fidelidade com combate aprimorado e mundo rico para explorar no PS5.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'castlevania_belmonts_curse',
+    title: 'Castlevania Belmonts Curse',
+    realName: 'Castlevania: Belmont’s Curse',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/jwxu4tnm1h4i',
+    coverUrl: '/covers/castlevania_belmonts_curse.jpg',
+    likes: 275,
+    downloads: 530,
+    developer: 'Konami',
+    description: 'O chicote sagrado e o castelo de Drácula em uma atmosfera gótica clássica reimaginada para a nova geração.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'captain_tsubasa',
+    title: 'Captain Tsubasa',
+    realName: 'Captain Tsubasa: Rise of New Champions',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/ipon7oln283e',
+    coverUrl: '/covers/captain_tsubasa.jpg',
+    likes: 260,
+    downloads: 480,
+    developer: 'Tamsoft / Bandai Namco',
+    description: 'Futebol de anime cinematográfico repleto de superchutes especiais e defesas espetaculares no PlayStation 5.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'mortal_shell_2',
+    title: 'Mortal Shell 2',
+    realName: 'Mortal Shell II',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/kzlevwkg46xh',
+    coverUrl: '/covers/mortal_shell_2.jpg',
+    likes: 215,
+    downloads: 390,
+    developer: 'Cold Symmetry / Playstack',
+    description: 'RPG de ação implacável e sombrio onde possuir guerreiros derrotados e petrificar o corpo definem a sobrevivência.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'dragon_ball_sparking_zero',
+    title: 'Dragon Ball Sparking Zero',
+    realName: 'Dragon Ball: Sparking! ZERO',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/xvsckmt694nf',
+    coverUrl: '/covers/dragon_ball_sparking_zero.jpg',
+    likes: 450,
+    downloads: 980,
+    developer: 'Spike Chunsoft / Bandai Namco',
+    description: 'Batalhas 3D colossais com transformações épicas e destruição de cenário massiva com guerreiros lendários.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'hollow_knight_silksong',
+    title: 'Hollow Knight Silksong',
+    realName: 'Hollow Knight: Silksong',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/4ea5kremvsl8',
+    coverUrl: '/covers/hollow_knight_silksong.jpg',
+    likes: 490,
+    downloads: 1050,
+    developer: 'Team Cherry',
+    description: 'Descubra um reino governado por seda e música controlando a princesa caçadora Hornet nesta sequência aguardada.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'hollow_knight_voidheart',
+    title: 'Hollow Knight Voidheart',
+    realName: 'Hollow Knight: Voidheart Edition',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/wg2jwkb66m7h',
+    coverUrl: '/covers/hollow_knight_voidheart.jpg',
+    likes: 380,
+    downloads: 720,
+    developer: 'Team Cherry',
+    description: 'A aclamada obra-prima de exploração e combate 2D em Hallownest com 4 grandes expansões de conteúdo inclusas.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'just_cause_3_4',
+    title: 'Just Cause 3 e 4',
+    realName: 'Just Cause 3 & 4 (PS4/PS5)',
+    platform: 'PS4/PS5',
+    driveUrl: 'https://buzzheavier.com/5ptr2vddfhby',
+    coverUrl: '/covers/just_cause_3_4.jpg',
+    likes: 290,
+    downloads: 510,
+    developer: 'Avalanche Studios / Square Enix',
+    description: 'Pacote completo de ação e destruição explosiva com wingsuit, gancho retrátil e tempestades extremas.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+    extraLinks: [
+      {
+        name: 'Download Just Cause 3',
+        url: 'https://buzzheavier.com/5ptr2vddfhby',
+      },
+      {
+        name: 'Download Just Cause 4',
+        url: 'https://buzzheavier.com/n4x0jul65etk',
+      },
+    ],
+  },
+  {
+    id: 'battlefield_1',
+    title: 'Battlefield 1',
+    realName: 'Battlefield 1 (PS4/PS5)',
+    platform: 'PS4/PS5',
+    driveUrl: 'https://buzzheavier.com/bnoxzafxkhr5',
+    coverUrl: '/covers/battlefield_1.jpg',
+    likes: 320,
+    downloads: 670,
+    developer: 'DICE / EA',
+    description: 'O ápice da guerra total histórica com veículos blindados, aviões biplanos e combates viscerais épicos.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'assassins_creed_4',
+    title: "Assassin's Creed 4",
+    realName: "Assassin's Creed IV: Black Flag (PS4/PS5)",
+    platform: 'PS4/PS5',
+    driveUrl: 'https://buzzheavier.com/7gbc7wiobnlw',
+    coverUrl: '/covers/assassins_creed_4.jpg',
+    likes: 335,
+    downloads: 710,
+    developer: 'Ubisoft',
+    description: 'Navegue pelo Caribe dourado dos piratas comandando seu navio Gralha com combates navais inesquecíveis.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'final_fantasy_resonance',
+    title: 'Final Fantasy Resonance',
+    realName: 'Final Fantasy: Resonance',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/n7ye43gxjacs',
+    coverUrl: '/covers/final_fantasy_resonance.jpg',
+    likes: 285,
+    downloads: 520,
+    developer: 'Square Enix',
+    description: 'Ação e magia cinematográfica em um universo deslumbrante com combates em tempo real e trilha épica.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'nba_27',
+    title: 'NBA 27',
+    realName: 'NBA 2K27',
+    platform: 'PS5',
+    driveUrl: 'https://vikingfile.com/f/mWmA9XErqL#NBA',
+    coverUrl: '/covers/nba_27.jpg',
+    likes: 270,
+    downloads: 460,
+    developer: 'Visual Concepts / 2K Sports',
+    description: 'A simulação definitiva de basquete da NBA com fidelidade gráfica assombrosa e mecânica ProPLAY no PS5.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'valor_mortis',
+    title: 'Valor Mortis',
+    realName: 'Valor Mortis',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/ohi2hc8f478v',
+    coverUrl: '/covers/valor_mortis.jpg',
+    likes: 205,
+    downloads: 340,
+    developer: 'From-inspired Action RPG',
+    description: 'Aventura sombria e desafiadora de fantasia medieval com chefes brutais e combate tático exigente.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'khazan',
+    title: 'The First Berserker Khazan',
+    realName: 'The First Berserker: Khazan',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/maae9fntv571',
+    coverUrl: '/covers/khazan.jpg',
+    likes: 315,
+    downloads: 590,
+    developer: 'Neople / Nexon',
+    description: 'Ação implacável estilo anime cel-shading onde o general renegado Khazan desencadeia sua fúria contra o império.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'control_resonant',
+    title: 'Control Resonant',
+    realName: 'Control Resonant',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/t69ommmya4js',
+    coverUrl: '/covers/control_resonant.jpg',
+    likes: 265,
+    downloads: 450,
+    developer: 'Remedy Entertainment',
+    description: 'Explore eventos sobrenaturais bizarros e anomalias dimensionais empunhando a Arma de Serviço e poderes telecinéticos.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
+  {
+    id: 'crimson_desert',
+    title: 'Crimson Desert PT-BR',
+    realName: 'Crimson Desert (PT-BR)',
+    platform: 'PS5',
+    driveUrl: 'https://buzzheavier.com/7kts074ah8o5',
+    coverUrl: '/covers/crimson_desert.jpg',
+    likes: 395,
+    downloads: 810,
+    developer: 'Pearl Abyss',
+    description: 'Ação em mundo aberto monumental no continente devastado pela guerra de Pywel com dublagem completa em português.',
+    partnerCredit: RAFAEL_PARTNER_CREDIT,
+  },
 ];
 
 // Subscribe to games with real-time updates and dynamic sync of target URLs
@@ -347,11 +616,20 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
             games.push(initGame);
           } else {
             const found = games.find((g) => g.id === initGame.id);
-            if (found && (found.driveUrl !== initGame.driveUrl || found.coverUrl !== initGame.coverUrl || found.realName !== initGame.realName)) {
+            if (
+              found &&
+              (found.driveUrl !== initGame.driveUrl ||
+                found.coverUrl !== initGame.coverUrl ||
+                found.realName !== initGame.realName ||
+                JSON.stringify(found.partnerCredit) !== JSON.stringify(initGame.partnerCredit) ||
+                JSON.stringify(found.extraLinks) !== JSON.stringify(initGame.extraLinks))
+            ) {
               found.driveUrl = initGame.driveUrl;
               found.realName = initGame.realName;
               found.title = initGame.title;
               found.coverUrl = initGame.coverUrl;
+              found.partnerCredit = initGame.partnerCredit;
+              found.extraLinks = initGame.extraLinks;
               setDoc(doc(db, 'games', initGame.id), initGame, { merge: true }).catch(console.error);
             }
           }
@@ -380,6 +658,24 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
           'street_fighter_6_fighters_edition',
           'blasphemous_2_pfs',
           'returnal_pfs',
+          'gow_sons_of_sparta',
+          'ea_sports_fc_27',
+          'the_witcher_remastered',
+          'castlevania_belmonts_curse',
+          'captain_tsubasa',
+          'mortal_shell_2',
+          'dragon_ball_sparking_zero',
+          'hollow_knight_silksong',
+          'hollow_knight_voidheart',
+          'just_cause_3_4',
+          'battlefield_1',
+          'assassins_creed_4',
+          'final_fantasy_resonance',
+          'nba_27',
+          'valor_mortis',
+          'khazan',
+          'control_resonant',
+          'crimson_desert',
         ];
         games.sort((a, b) => {
           const idxA = order.indexOf(a.id);

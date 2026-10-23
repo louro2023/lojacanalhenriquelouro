@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Download, Heart, Sparkles } from 'lucide-react';
+import { Download, Heart, Sparkles, Youtube } from 'lucide-react';
 import { GameItem, likeGame } from '../lib/firebase';
 
 interface GameCardProps {
@@ -75,10 +75,16 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
       {/* TOP PS5 HEADER BANNER */}
       <div className="w-full flex items-center justify-between mb-4 pb-2.5 border-b border-white/10">
         {/* PS5 Official-style badge */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <div className="px-2.5 py-1 rounded-md bg-white text-black font-black text-xs tracking-tighter uppercase shadow-[0_0_10px_rgba(255,255,255,0.3)] flex items-center gap-1">
-            <span>PS5</span>
+            <span>{game.platform || 'PS5'}</span>
           </div>
+          {game.partnerCredit && (
+            <div className="px-2 py-0.5 rounded-md bg-red-500/20 border border-red-500/40 text-[9px] font-black text-red-300 uppercase tracking-tight flex items-center gap-1">
+              <Youtube className="w-2.5 h-2.5 text-red-400 fill-red-400" />
+              <span>Canal {game.partnerCredit.name}</span>
+            </div>
+          )}
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">
             {game.developer || 'PlayStation 5'}
           </span>

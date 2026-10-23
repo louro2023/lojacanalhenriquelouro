@@ -10,8 +10,9 @@ import {
   Heart,
   Gamepad2,
   Send,
+  Youtube,
 } from 'lucide-react';
-import { incrementDownload } from '../lib/firebase';
+import { incrementDownload, PartnerCredit, GameExtraLink } from '../lib/firebase';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -20,6 +21,8 @@ interface DownloadModalProps {
   targetGameId: string;
   targetDriveUrl: string;
   onOpenSupport?: () => void;
+  partnerCredit?: PartnerCredit;
+  extraLinks?: GameExtraLink[];
 }
 
 export const MELI_SPONSOR_URL = 'https://meli.la/2EBwarN';
@@ -31,6 +34,8 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   targetGameId,
   targetDriveUrl,
   onOpenSupport,
+  partnerCredit,
+  extraLinks,
 }) => {
   const [downloadStarted, setDownloadStarted] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -127,6 +132,30 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </p>
         </div>
 
+        {/* Crédito Exclusivo do Canal Parceiro (Exibido SOMENTE nos títulos novos fornecidos por ele) */}
+        {partnerCredit && (
+          <div className="p-3.5 mb-4 rounded-2xl bg-gradient-to-r from-red-950/70 via-[#180a0e] to-slate-900 border-2 border-red-500/50 text-center animate-in fade-in shadow-[0_0_25px_rgba(239,68,68,0.3)]">
+            <div className="flex items-center justify-center gap-1.5 text-rose-300 font-black text-xs uppercase tracking-wider mb-1">
+              <Youtube className="w-4 h-4 text-red-500 fill-red-500 shrink-0" />
+              <span>Fornecido por Canal Parceiro</span>
+            </div>
+            <p className="text-xs text-slate-200 mb-2.5 leading-relaxed">
+              Este título foi fornecido pelo canal parceiro{' '}
+              <strong className="text-red-300 font-extrabold">{partnerCredit.name}</strong>!
+            </p>
+            <a
+              href={partnerCredit.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:brightness-110 active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Youtube className="w-4 h-4 fill-white" />
+              <span>Visitar Canal Rafael no YouTube</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+            </a>
+          </div>
+        )}
+
         {/* Success Feedback if downloaded */}
         {downloadStarted && (
           <div className="p-3 mb-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex flex-col items-center justify-center gap-1 animate-in fade-in">
@@ -154,6 +183,28 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             <span>Fazer Download Agora (Link Direto)</span>
             <ExternalLink className="w-3.5 h-3.5 opacity-70" />
           </a>
+
+          {/* Extra Download Links (Unlocker / Partes Adicionais) */}
+          {extraLinks && extraLinks.length > 0 && (
+            <div className="space-y-2 pt-1 pb-1">
+              <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider block text-left">
+                📦 Arquivos Adicionais / Desbloqueio:
+              </span>
+              {extraLinks.map((extra, idx) => (
+                <a
+                  key={idx}
+                  href={extra.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+                >
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
+                  <span>{extra.name}</span>
+                  <ExternalLink className="w-3 h-3 opacity-75" />
+                </a>
+              ))}
+            </div>
+          )}
 
           {/* Copy Direct Link Button */}
           <button

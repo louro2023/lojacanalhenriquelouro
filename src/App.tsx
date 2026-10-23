@@ -284,6 +284,8 @@ export default function App() {
           targetGameName={selectedGame.realName}
           targetGameId={selectedGame.id}
           targetDriveUrl={selectedGame.driveUrl}
+          partnerCredit={selectedGame.partnerCredit}
+          extraLinks={selectedGame.extraLinks}
           onOpenSupport={() => setIsSupportModalOpen(true)}
         />
       )}
