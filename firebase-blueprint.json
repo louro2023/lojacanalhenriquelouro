@@ -1,0 +1,63 @@
+{
+  "entities": {
+    "UserAccount": {
+      "title": "UserAccount",
+      "description": "User account with download credits, license expiration and administrative controls",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "customer"] },
+        "status": { "type": "string", "enum": ["active", "pending", "suspended", "expired"] },
+        "downloadCredits": { "type": "number" },
+        "totalDownloads": { "type": "number" },
+        "licenseDays": { "type": "number" },
+        "licenseExpiresAt": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["username", "email", "role", "status", "downloadCredits", "licenseExpiresAt"]
+    },
+    "Game": {
+      "title": "Game",
+      "description": "Video game available in Henrique Games store with real-time stats",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "realName": { "type": "string" },
+        "platform": { "type": "string" },
+        "driveUrl": { "type": "string" },
+        "coverUrl": { "type": "string" },
+        "likes": { "type": "number" },
+        "downloads": { "type": "number" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "realName", "platform", "driveUrl", "coverUrl"]
+    },
+    "SupporterMessage": {
+      "title": "SupporterMessage",
+      "description": "Real-time community messages and feedback",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 50 },
+        "message": { "type": "string", "maxLength": 280 },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "message", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/userAccounts/{userId}": {
+      "schema": "UserAccount",
+      "description": "User credentials, access levels, download credits and expiration date"
+    },
+    "/games/{gameId}": {
+      "schema": "Game",
+      "description": "Catalog of PlayStation 5 games with live stats"
+    },
+    "/supporterMessages/{messageId}": {
+      "schema": "SupporterMessage",
+      "description": "Live real-time feed of community gamer messages"
+    }
+  }
+}

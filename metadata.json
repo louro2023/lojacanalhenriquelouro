@@ -1,0 +1,6 @@
+{
+  "name": "LOJA DE JOGOS CANAL HENRIQUE LOURO - Jogos PS5",
+  "description": "LOJA DE JOGOS CANAL HENRIQUE LOURO para PlayStation 5 com lançamentos testados e funcionando prontos para instalação.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
