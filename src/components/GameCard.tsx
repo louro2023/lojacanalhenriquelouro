@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Download, Heart, Sparkles, Youtube } from 'lucide-react';
-import { GameItem, likeGame } from '../lib/firebase';
+import { GameItem, likeGame, PARTNER_GAME_IDS, RAFAEL_PARTNER_CREDIT } from '../lib/firebase';
 
 interface GameCardProps {
   game: GameItem;
@@ -17,12 +17,12 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Garante a atribuição permanente do parceiro no card
+  const isPartnerGame = !!game.partnerCredit || PARTNER_GAME_IDS.has(game.id);
+  const partnerCredit = game.partnerCredit || (isPartnerGame ? RAFAEL_PARTNER_CREDIT : undefined);
+
+  // Acionamento instantâneo do modal de download (sem popup blockers atrapalhando no celular)
   const handleDownloadTrigger = () => {
-    try {
-      window.open(MELI_SPONSOR_URL, '_blank', 'noopener,noreferrer');
-    } catch (err) {
-      console.warn('Erro ao abrir nova guia:', err);
-    }
     onDownload(game);
   };
 
@@ -79,10 +79,10 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
           <div className="px-2.5 py-1 rounded-md bg-white text-black font-black text-xs tracking-tighter uppercase shadow-[0_0_10px_rgba(255,255,255,0.3)] flex items-center gap-1">
             <span>{game.platform || 'PS5'}</span>
           </div>
-          {game.partnerCredit && (
+          {partnerCredit && (
             <div className="px-2 py-0.5 rounded-md bg-red-500/20 border border-red-500/40 text-[9px] font-black text-red-300 uppercase tracking-tight flex items-center gap-1">
               <Youtube className="w-2.5 h-2.5 text-red-400 fill-red-400" />
-              <span>Canal {game.partnerCredit.name}</span>
+              <span>Canal {partnerCredit.name}</span>
             </div>
           )}
           <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">
@@ -190,9 +190,9 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
       <button
         type="button"
         onClick={handleDownloadTrigger}
-        className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:shadow-[0_0_30px_rgba(0,210,255,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group"
+        className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:shadow-[0_0_30px_rgba(0,210,255,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group touch-manipulation select-none"
       >
-        <Download className="w-4 h-4 group-hover:scale-110 transition-transform" />
+        <Download className="w-4 h-4 group-hover:scale-110 transition-transform shrink-0" />
         <span>Fazer Download</span>
       </button>
     </div>

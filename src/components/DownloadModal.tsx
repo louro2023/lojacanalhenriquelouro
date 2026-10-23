@@ -12,7 +12,13 @@ import {
   Send,
   Youtube,
 } from 'lucide-react';
-import { incrementDownload, PartnerCredit, GameExtraLink } from '../lib/firebase';
+import {
+  incrementDownload,
+  PartnerCredit,
+  GameExtraLink,
+  PARTNER_GAME_IDS,
+  RAFAEL_PARTNER_CREDIT,
+} from '../lib/firebase';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -42,20 +48,14 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleDownloadClick = (e: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => {
+  // Garante de forma 100% definitiva a exibição do canal parceiro nos 18 novos títulos
+  const effectivePartnerCredit =
+    partnerCredit || (PARTNER_GAME_IDS.has(targetGameId) ? RAFAEL_PARTNER_CREDIT : undefined);
+
+  // Manipulador de download 100% confiável no celular (sem chamadas bloqueadoras de popup)
+  const handleDownloadClick = () => {
     setDownloadStarted(true);
     incrementDownload(targetGameId).catch(console.error);
-
-    // Abre sempre uma nova guia com o link de afiliado / patrocinador
-    try {
-      window.open(MELI_SPONSOR_URL, '_blank', 'noopener,noreferrer');
-    } catch (err) {
-      console.warn('Erro ao abrir nova guia patrocinador:', err);
-    }
-
-    if (!targetDriveUrl) {
-      e.preventDefault();
-    }
   };
 
   const handleCopyLink = async () => {
@@ -73,13 +73,6 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
       }
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
-
-      // Abre também a nova guia ao copiar o link de download
-      try {
-        window.open(MELI_SPONSOR_URL, '_blank', 'noopener,noreferrer');
-      } catch {
-        // ignore
-      }
     } catch (err) {
       console.warn('Erro ao copiar:', err);
     }
@@ -133,7 +126,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
         </div>
 
         {/* Crédito Exclusivo do Canal Parceiro (Exibido SOMENTE nos títulos novos fornecidos por ele) */}
-        {partnerCredit && (
+        {effectivePartnerCredit && (
           <div className="p-3.5 mb-4 rounded-2xl bg-gradient-to-r from-red-950/70 via-[#180a0e] to-slate-900 border-2 border-red-500/50 text-center animate-in fade-in shadow-[0_0_25px_rgba(239,68,68,0.3)]">
             <div className="flex items-center justify-center gap-1.5 text-rose-300 font-black text-xs uppercase tracking-wider mb-1">
               <Youtube className="w-4 h-4 text-red-500 fill-red-500 shrink-0" />
@@ -141,17 +134,17 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
             </div>
             <p className="text-xs text-slate-200 mb-2.5 leading-relaxed">
               Este título foi fornecido pelo canal parceiro{' '}
-              <strong className="text-red-300 font-extrabold">{partnerCredit.name}</strong>!
+              <strong className="text-red-300 font-extrabold">{effectivePartnerCredit.name}</strong>!
             </p>
             <a
-              href={partnerCredit.url}
+              href={effectivePartnerCredit.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:brightness-110 active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:brightness-110 active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all cursor-pointer flex items-center justify-center gap-2 touch-manipulation"
             >
-              <Youtube className="w-4 h-4 fill-white" />
+              <Youtube className="w-4 h-4 fill-white shrink-0" />
               <span>Visitar Canal Rafael no YouTube</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+              <ExternalLink className="w-3.5 h-3.5 opacity-80 shrink-0" />
             </a>
           </div>
         )}
@@ -171,17 +164,17 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
 
         {/* Actions */}
         <div className="w-full space-y-2.5">
-          {/* Main Download Button */}
+          {/* Main Download Button (otimizado e 100% funcional no celular) */}
           <a
             href={targetDriveUrl || '#'}
             target="_blank"
             rel="noopener noreferrer"
             onClick={handleDownloadClick}
-            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
           >
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4 shrink-0" />
             <span>Fazer Download Agora (Link Direto)</span>
-            <ExternalLink className="w-3.5 h-3.5 opacity-70" />
+            <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
           </a>
 
           {/* Extra Download Links (Unlocker / Partes Adicionais) */}

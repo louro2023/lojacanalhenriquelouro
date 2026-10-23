@@ -589,9 +589,31 @@ export const INITIAL_GAMES: GameItem[] = [
   },
 ];
 
-// Subscribe to games with real-time updates and dynamic sync of target URLs
+export const PARTNER_GAME_IDS = new Set<string>([
+  'gow_sons_of_sparta',
+  'ea_sports_fc_27',
+  'the_witcher_remastered',
+  'castlevania_belmonts_curse',
+  'captain_tsubasa',
+  'mortal_shell_2',
+  'dragon_ball_sparking_zero',
+  'hollow_knight_silksong',
+  'hollow_knight_voidheart',
+  'just_cause_3_4',
+  'battlefield_1',
+  'assassins_creed_4',
+  'final_fantasy_resonance',
+  'nba_27',
+  'valor_mortis',
+  'khazan',
+  'control_resonant',
+  'crimson_desert',
+]);
+
+// Subscribe to games with real-time updates and permanent partner attribution guarantee
 export function subscribeGames(callback: (games: GameItem[]) => void) {
   const gamesCollection = collection(db, 'games');
+  const initialMap = new Map(INITIAL_GAMES.map((g) => [g.id, g]));
 
   return onSnapshot(
     gamesCollection,
@@ -602,89 +624,46 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
         });
         callback(INITIAL_GAMES);
       } else {
-        const games: GameItem[] = [];
+        const firestoreDataMap = new Map<string, any>();
         const existingIds = new Set<string>();
         snapshot.forEach((d) => {
           existingIds.add(d.id);
-          games.push({ id: d.id, ...(d.data() as Omit<GameItem, 'id'>) });
+          firestoreDataMap.set(d.id, d.data());
         });
 
-        // Ensure newly introduced games and updated links sync into Firestore
+        // Ensure newly introduced games sync into Firestore once if missing
         INITIAL_GAMES.forEach((initGame) => {
           if (!existingIds.has(initGame.id)) {
             setDoc(doc(db, 'games', initGame.id), initGame).catch(console.error);
-            games.push(initGame);
-          } else {
-            const found = games.find((g) => g.id === initGame.id);
-            if (
-              found &&
-              (found.driveUrl !== initGame.driveUrl ||
-                found.coverUrl !== initGame.coverUrl ||
-                found.realName !== initGame.realName ||
-                JSON.stringify(found.partnerCredit) !== JSON.stringify(initGame.partnerCredit) ||
-                JSON.stringify(found.extraLinks) !== JSON.stringify(initGame.extraLinks))
-            ) {
-              found.driveUrl = initGame.driveUrl;
-              found.realName = initGame.realName;
-              found.title = initGame.title;
-              found.coverUrl = initGame.coverUrl;
-              found.partnerCredit = initGame.partnerCredit;
-              found.extraLinks = initGame.extraLinks;
-              setDoc(doc(db, 'games', initGame.id), initGame, { merge: true }).catch(console.error);
-            }
           }
         });
 
-        const order = [
-          'pragmata_deluxe',
-          'spiderman_2',
-          'astro_bot',
-          'ghost_of_yotei',
-          'spiderman_remastered',
-          'resident_evil_4_remake',
-          'hogwarts_legacy',
-          'resident_evil_requiem',
-          'black_myth_wukong',
-          'silenthill_townfall',
-          'wolverine',
-          '007',
-          'onimusha',
-          'tekken_8_ultimate',
-          'star_wars_galactic_racer',
-          'hifi_rush_deluxe',
-          'hellraiser_revival_deluxe',
-          'saros',
-          'ufc_6',
-          'street_fighter_6_fighters_edition',
-          'blasphemous_2_pfs',
-          'returnal_pfs',
-          'gow_sons_of_sparta',
-          'ea_sports_fc_27',
-          'the_witcher_remastered',
-          'castlevania_belmonts_curse',
-          'captain_tsubasa',
-          'mortal_shell_2',
-          'dragon_ball_sparking_zero',
-          'hollow_knight_silksong',
-          'hollow_knight_voidheart',
-          'just_cause_3_4',
-          'battlefield_1',
-          'assassins_creed_4',
-          'final_fantasy_resonance',
-          'nba_27',
-          'valor_mortis',
-          'khazan',
-          'control_resonant',
-          'crimson_desert',
-        ];
-        games.sort((a, b) => {
-          const idxA = order.indexOf(a.id);
-          const idxB = order.indexOf(b.id);
-          if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-          if (idxA !== -1) return -1;
-          if (idxB !== -1) return 1;
-          return 0;
+        // Construct canonical games list: static catalog definitions merged with live Firestore likes/downloads
+        const games: GameItem[] = INITIAL_GAMES.map((initGame) => {
+          const liveData = firestoreDataMap.get(initGame.id);
+          const isPartner = PARTNER_GAME_IDS.has(initGame.id);
+          return {
+            ...initGame,
+            likes: typeof liveData?.likes === 'number' ? liveData.likes : initGame.likes,
+            downloads: typeof liveData?.downloads === 'number' ? liveData.downloads : initGame.downloads,
+            // Guarantee partner credit persistence across all reloads & updates:
+            partnerCredit: isPartner ? RAFAEL_PARTNER_CREDIT : undefined,
+          };
         });
+
+        // Add any extra custom games added through Firestore that aren't in INITIAL_GAMES
+        snapshot.forEach((d) => {
+          if (!initialMap.has(d.id)) {
+            const data = d.data() as Omit<GameItem, 'id'>;
+            const isPartner = PARTNER_GAME_IDS.has(d.id);
+            games.push({
+              id: d.id,
+              ...data,
+              partnerCredit: isPartner ? RAFAEL_PARTNER_CREDIT : undefined,
+            });
+          }
+        });
+
         callback(games);
       }
     },

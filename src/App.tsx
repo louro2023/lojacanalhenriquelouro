@@ -89,35 +89,35 @@ export default function App() {
       
       {/* Top Header */}
       <header className="w-full border-b border-cyan-500/20 bg-[#070c18]/90 backdrop-blur-md sticky top-0 z-30 shadow-[0_4px_25px_rgba(0,0,0,0.6)]">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
           
           {/* Brand */}
-          <div className="flex items-center gap-2.5 sm:gap-3">
-            <div className="relative group">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            <div className="relative group shrink-0">
               <div className="absolute -inset-1 rounded-full bg-cyan-400 opacity-60 blur-sm group-hover:opacity-100 transition-opacity" />
               <img
                 src={LOGO_PATH}
                 alt="Logo Canal Henrique Louro"
-                className="relative w-11 h-11 rounded-full border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,210,255,0.6)] object-cover shrink-0 hover:scale-105 transition-transform"
+                className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,210,255,0.6)] object-cover shrink-0 hover:scale-105 transition-transform"
               />
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-              <span className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white uppercase font-sans leading-tight">
+            <div className="flex flex-col">
+              <span className="text-xs sm:text-sm md:text-base font-black tracking-tight text-white uppercase font-sans leading-tight whitespace-nowrap">
                 LOJA DE JOGOS CANAL <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-sky-300 to-blue-500">HENRIQUE LOURO</span>
               </span>
             </div>
 
             {/* PS5 Brand Pill */}
-            <span className="hidden lg:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-white text-black font-black text-[11px] tracking-tight uppercase shrink-0 shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+            <span className="hidden xl:inline-flex items-center px-2 py-0.5 rounded-full bg-white text-black font-black text-[10px] tracking-tight uppercase shrink-0 shadow-[0_0_10px_rgba(255,255,255,0.4)]">
               PS5™
             </span>
           </div>
 
           {/* Controls & Support Trigger */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             {/* Status da Inscrição */}
-            <div className="hidden md:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-bold text-emerald-300 shadow-[0_0_10px_rgba(16,185,129,0.15)]">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-xs font-semibold text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.12)] whitespace-nowrap">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Inscrito Verificado</span>
             </div>
 
@@ -126,9 +126,9 @@ export default function App() {
               href={TELEGRAM_GROUP_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2 px-3 sm:px-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:brightness-110 active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(14,165,233,0.35)] transition-all flex items-center gap-1.5 cursor-pointer"
+              className="h-9 px-3 sm:px-3.5 rounded-full bg-sky-500/15 hover:bg-sky-500/25 active:scale-95 text-sky-200 hover:text-white border border-sky-400/30 hover:border-sky-400/50 text-xs font-semibold tracking-wide shadow-[0_0_15px_rgba(14,165,233,0.15)] transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
-              <Send className="w-3.5 h-3.5 fill-white text-white" />
+              <Send className="w-3.5 h-3.5 text-sky-400 shrink-0" />
               <span className="hidden sm:inline">Grupo Telegram (Ofertas)</span>
               <span className="sm:hidden">Telegram</span>
             </a>
@@ -137,10 +137,11 @@ export default function App() {
             <button
               type="button"
               onClick={() => setIsSupportModalOpen(true)}
-              className="py-2 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 hover:brightness-110 active:scale-95 text-black font-black text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] transition-all flex items-center gap-2 cursor-pointer"
+              className="h-9 px-3.5 sm:px-4 rounded-full bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 hover:brightness-110 active:scale-95 text-white font-bold text-xs uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] transition-all flex items-center gap-1.5 whitespace-nowrap cursor-pointer"
             >
-              <Heart className="w-4 h-4 fill-black text-black" />
-              <span>Apoiar Canal (PIX)</span>
+              <Heart className="w-3.5 h-3.5 fill-white text-white shrink-0" />
+              <span className="hidden sm:inline">Apoiar Canal (PIX)</span>
+              <span className="sm:hidden">Apoiar (PIX)</span>
             </button>
 
             {/* Botão de Trancar Acesso (Sub4Unlock) */}
@@ -148,10 +149,10 @@ export default function App() {
               type="button"
               onClick={handleLockSite}
               title="Trancar Acesso para testar tela Sub4Unlock"
-              className="py-2 px-3 rounded-xl bg-white/5 hover:bg-cyan-500/10 active:scale-95 text-cyan-300 hover:text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer border border-cyan-500/30 shadow-[0_0_10px_rgba(0,210,255,0.15)]"
+              className="h-9 px-2.5 sm:px-3 rounded-full bg-slate-800/60 hover:bg-slate-700/80 active:scale-95 text-slate-300 hover:text-cyan-300 border border-slate-700/60 hover:border-cyan-500/40 text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer"
             >
-              <Lock className="w-3.5 h-3.5 text-cyan-400" />
-              <span className="hidden sm:inline">Trancar</span>
+              <Lock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="hidden md:inline">Trancar</span>
             </button>
           </div>
 
@@ -277,18 +278,21 @@ export default function App() {
       />
 
       {/* Modal de Download Direto (Abre diretamente ao clicar no jogo, sem senha!) */}
-      {selectedGame && (
-        <DownloadModal
-          isOpen={!!selectedGame}
-          onClose={() => setSelectedGame(null)}
-          targetGameName={selectedGame.realName}
-          targetGameId={selectedGame.id}
-          targetDriveUrl={selectedGame.driveUrl}
-          partnerCredit={selectedGame.partnerCredit}
-          extraLinks={selectedGame.extraLinks}
-          onOpenSupport={() => setIsSupportModalOpen(true)}
-        />
-      )}
+      {selectedGame && (() => {
+        const activeGame = games.find((g) => g.id === selectedGame.id) || selectedGame;
+        return (
+          <DownloadModal
+            isOpen={!!selectedGame}
+            onClose={() => setSelectedGame(null)}
+            targetGameName={activeGame.realName}
+            targetGameId={activeGame.id}
+            targetDriveUrl={activeGame.driveUrl}
+            partnerCredit={activeGame.partnerCredit}
+            extraLinks={activeGame.extraLinks}
+            onOpenSupport={() => setIsSupportModalOpen(true)}
+          />
+        );
+      })()}
 
     </div>
   );
