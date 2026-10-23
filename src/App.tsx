@@ -4,6 +4,7 @@ import { DownloadModal } from './components/DownloadModal';
 import { SupportModal } from './components/SupportModal';
 import { RealtimeSupporterBoard } from './components/RealtimeSupporterBoard';
 import { SiteAccessGate } from './components/SiteAccessGate';
+import { TelegramPromoBanner, TELEGRAM_GROUP_URL } from './components/TelegramPromoBanner';
 import {
   Gamepad2,
   Sparkles,
@@ -11,6 +12,7 @@ import {
   Lock,
   Youtube,
   ShieldCheck,
+  Send,
 } from 'lucide-react';
 import {
   GameItem,
@@ -119,6 +121,18 @@ export default function App() {
               <span>Inscrito Verificado</span>
             </div>
 
+            {/* Botão Grupo VIP Telegram */}
+            <a
+              href={TELEGRAM_GROUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-2 px-3 sm:px-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:brightness-110 active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-[0_0_15px_rgba(14,165,233,0.35)] transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5 fill-white text-white" />
+              <span className="hidden sm:inline">Grupo Telegram (Ofertas)</span>
+              <span className="sm:hidden">Telegram</span>
+            </a>
+
             {/* Botão de Apoiar o Projeto (PIX) */}
             <button
               type="button"
@@ -210,6 +224,9 @@ export default function App() {
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl mb-8 leading-relaxed">
             Confira abaixo os lançamentos disponíveis no catálogo da <strong>LOJA DE JOGOS CANAL HENRIQUE LOURO</strong>. Clique no jogo desejado para iniciar o download oficial.
           </p>
+
+          {/* BANNER OFERTAS & ACESSÓRIOS TELEGRAM */}
+          <TelegramPromoBanner />
 
           {/* GAMES SHOWCASE GRID */}
           <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch justify-items-center mb-6">

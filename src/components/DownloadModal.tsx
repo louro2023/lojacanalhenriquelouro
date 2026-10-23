@@ -9,6 +9,7 @@ import {
   Check,
   Heart,
   Gamepad2,
+  Send,
 } from 'lucide-react';
 import { incrementDownload } from '../lib/firebase';
 
@@ -195,6 +196,27 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
               </button>
             </div>
           )}
+
+          {/* Telegram Promo Banner in Modal */}
+          <div className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-sky-950/60 to-blue-950/60 border border-sky-500/30 text-center shadow-[0_0_15px_rgba(14,165,233,0.15)]">
+            <div className="flex items-center justify-center gap-1.5 text-sky-300 font-bold text-xs mb-1">
+              <Send className="w-3.5 h-3.5 fill-sky-400 text-sky-400" />
+              <span>Acessórios &amp; Ofertas PS5</span>
+            </div>
+            <p className="text-[11px] text-slate-300 mb-2 leading-relaxed">
+              Entre no nosso grupo do Telegram! Postamos produtos com desconto para melhorar seu PS5. Ao comprar, você também apoia o canal!
+            </p>
+            <a
+              href="https://t.me/+VLztuPp9D4BlM2Fh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-600 hover:brightness-110 text-white font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-md shadow-sky-500/25"
+            >
+              <Send className="w-3 h-3 fill-white" />
+              <span>Entrar no Grupo Telegram</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
 
           <p className="text-[11px] text-slate-400 pt-1 leading-relaxed">
             💡 Jogo 100% testado e funcionando pronto para instalação no console PS5.
