@@ -11,6 +11,7 @@ import {
   Gamepad2,
   Send,
   Youtube,
+  ShoppingBag,
 } from 'lucide-react';
 import {
   incrementDownload,
@@ -19,6 +20,7 @@ import {
   PARTNER_GAME_IDS,
   RAFAEL_PARTNER_CREDIT,
 } from '../lib/firebase';
+import { triggerAffiliateLink } from '../lib/affiliate';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -30,8 +32,6 @@ interface DownloadModalProps {
   partnerCredit?: PartnerCredit;
   extraLinks?: GameExtraLink[];
 }
-
-export const MELI_SPONSOR_URL = 'https://meli.la/2EBwarN';
 
 export const DownloadModal: React.FC<DownloadModalProps> = ({
   isOpen,
@@ -52,10 +52,15 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   const effectivePartnerCredit =
     partnerCredit || (PARTNER_GAME_IDS.has(targetGameId) ? RAFAEL_PARTNER_CREDIT : undefined);
 
-  // Manipulador de download 100% confiável no celular (sem chamadas bloqueadoras de popup)
+  // Manipulador de download: contabiliza, dispara link alternado de afiliado e indica início
   const handleDownloadClick = () => {
     setDownloadStarted(true);
     incrementDownload(targetGameId).catch(console.error);
+    try {
+      triggerAffiliateLink();
+    } catch (err) {
+      console.warn('Erro ao abrir afiliado:', err);
+    }
   };
 
   const handleCopyLink = async () => {
@@ -260,6 +265,25 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
               <span>Entrar no Grupo Telegram</span>
               <ExternalLink className="w-3 h-3" />
             </a>
+          </div>
+
+          {/* Banner de Oferta Alternada Mercado Livre */}
+          <div className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#18120a] to-slate-900 border border-amber-500/35 text-center shadow-[0_0_15px_rgba(245,158,11,0.12)]">
+            <div className="flex items-center justify-center gap-1.5 text-amber-300 font-bold text-xs mb-1">
+              <ShoppingBag className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Oferta Patrocinada • Mercado Livre</span>
+            </div>
+            <p className="text-[11px] text-slate-300 mb-2 leading-relaxed">
+              Ofertas em games, controles e acessórios no Mercado Livre com link oficial parceiro do canal.
+            </p>
+            <button
+              type="button"
+              onClick={() => triggerAffiliateLink()}
+              className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 active:scale-95 text-black font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-md shadow-amber-500/20"
+            >
+              <span>Ver Oferta Alternada do Dia</span>
+              <ExternalLink className="w-3 h-3 text-black" />
+            </button>
           </div>
 
           <p className="text-[11px] text-slate-400 pt-1 leading-relaxed">

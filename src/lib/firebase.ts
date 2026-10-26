@@ -74,6 +74,18 @@ export interface SupporterMessageItem {
 
 export const INITIAL_GAMES: GameItem[] = [
   {
+    id: 'ace_combat_8',
+    title: 'ACE COMBAT 8',
+    realName: 'ACE COMBAT 8',
+    platform: 'PS5',
+    driveUrl: 'https://vik1ngfile.site/f/Jtydas4kfg',
+    coverUrl: '/covers/ace_combat_8.jpg',
+    likes: 384,
+    downloads: 742,
+    developer: 'Bandai Namco / Project Aces',
+    description: 'Combates aéreos supersônicos em alta fidelidade com caças furtivos modernos e dogfights eletrizantes nos céus no PS5.',
+  },
+  {
     id: 'pragmata_deluxe',
     title: 'Pragmata Deluxe Edition',
     realName: 'PRAGMATA Deluxe Edition LZ4',
@@ -108,6 +120,12 @@ export const INITIAL_GAMES: GameItem[] = [
     downloads: 840,
     developer: 'Team Asobi / PlayStation Studios',
     description: 'O premiado jogo do ano no PS5! Mais de 50 galáxias repletas de ação, homenagens icônicas ao PlayStation e uso genial do DualSense formato LZ4.',
+    extraLinks: [
+      {
+        name: 'Download Servidor 2 (Buzzheavier)',
+        url: 'https://buzzheavier.com/qy09ev1q7kih',
+      },
+    ],
   },
   {
     id: 'ghost_of_yotei',
@@ -120,6 +138,12 @@ export const INITIAL_GAMES: GameItem[] = [
     downloads: 580,
     developer: 'Sucker Punch Productions / PlayStation Studios',
     description: 'A aguardada sequência de Ghost of Tsushima! Acompanhe a jornada épica da guerreira Atsu nas terras selvagens do Monte Yôtei em 1603 formato PFS.',
+    extraLinks: [
+      {
+        name: 'Download Servidor 2 (Buzzheavier)',
+        url: 'https://buzzheavier.com/edvxtgmojbyo',
+      },
+    ],
   },
   {
     id: 'spiderman_remastered',
@@ -198,12 +222,18 @@ export const INITIAL_GAMES: GameItem[] = [
     title: 'Wolverine',
     realName: "Marvel's Wolverine",
     platform: 'PS5',
-    driveUrl: 'https://vault14.link-vault.org/c/i45HTvlW',
+    driveUrl: 'https://buzzheavier.com/svfm94o2pzu2',
     coverUrl: 'https://upload.wikimedia.org/wikipedia/en/3/3d/Marvel%27s_Wolverine_cover_art.jpg',
     likes: 142,
     downloads: 389,
     developer: 'Insomniac Games',
     description: 'Ação visceral e narrativa profunda com garras de adamantium exclusivas no PlayStation 5.',
+    extraLinks: [
+      {
+        name: 'Download Servidor Espelho (Link Vault)',
+        url: 'https://vault14.link-vault.org/c/i45HTvlW',
+      },
+    ],
   },
   {
     id: '007',
@@ -222,12 +252,18 @@ export const INITIAL_GAMES: GameItem[] = [
     title: 'Onimusha: Way of the Sword',
     realName: 'Onimusha: Way of the Sword',
     platform: 'PS5',
-    driveUrl: 'https://vault15.link-vault.org/c/Ip8J0lL4',
+    driveUrl: 'https://buzzheavier.com/1lk0eaynlsi2',
     coverUrl: '/covers/onimusha_way_of_the_sword.jpg',
     likes: 85,
     downloads: 194,
     developer: 'Capcom',
     description: 'Ação e combate samurai com Miyamoto Musashi e a manopla Oni demoníaca na era feudal de Kyoto.',
+    extraLinks: [
+      {
+        name: 'Download Servidor Espelho (Link Vault)',
+        url: 'https://vault15.link-vault.org/c/Ip8J0lL4',
+      },
+    ],
   },
   {
     id: 'tekken_8_ultimate',
