@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Download,
@@ -11,7 +11,6 @@ import {
   Gamepad2,
   Send,
   Youtube,
-  ShoppingBag,
 } from 'lucide-react';
 import {
   incrementDownload,
@@ -20,7 +19,7 @@ import {
   PARTNER_GAME_IDS,
   RAFAEL_PARTNER_CREDIT,
 } from '../lib/firebase';
-import { triggerAffiliateLink } from '../lib/affiliate';
+import { openSingleRandomAffiliateAd } from '../lib/affiliate';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -44,7 +43,24 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   extraLinks,
 }) => {
   const [downloadStarted, setDownloadStarted] = useState(false);
+  const [hasTriggeredAd, setHasTriggeredAd] = useState(false);
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
+
+  // Redireciona para o link de download após a contagem regressiva
+  useEffect(() => {
+    if (redirectCountdown === null) return;
+    if (redirectCountdown <= 0) {
+      if (targetDriveUrl) {
+        window.location.href = targetDriveUrl;
+      }
+      return;
+    }
+    const timer = setTimeout(() => {
+      setRedirectCountdown((prev) => (prev !== null ? prev - 1 : 0));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [redirectCountdown, targetDriveUrl]);
 
   if (!isOpen) return null;
 
@@ -52,15 +68,21 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   const effectivePartnerCredit =
     partnerCredit || (PARTNER_GAME_IDS.has(targetGameId) ? RAFAEL_PARTNER_CREDIT : undefined);
 
-  // Manipulador de download: contabiliza, dispara link alternado de afiliado e indica início
+  // Ao clicar em download:
+  // 1. Exibe SOMENTE 1 anúncio aleatório em nova aba
+  // 2. Após isso, envia diretamente para o link de download do jogo
   const handleDownloadClick = () => {
     setDownloadStarted(true);
     incrementDownload(targetGameId).catch(console.error);
-    try {
-      triggerAffiliateLink();
-    } catch (err) {
-      console.warn('Erro ao abrir afiliado:', err);
+
+    // Abre SOMENTE 1 anúncio aleatório na sessão deste download
+    if (!hasTriggeredAd) {
+      setHasTriggeredAd(true);
+      openSingleRandomAffiliateAd();
     }
+
+    // Inicia o redirecionamento imediato para o download oficial do jogo
+    setRedirectCountdown(2);
   };
 
   const handleCopyLink = async () => {
@@ -154,33 +176,56 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </div>
         )}
 
-        {/* Success Feedback if downloaded */}
+        {/* Feedback de Redirecionamento após o Anúncio */}
         {downloadStarted && (
-          <div className="p-3 mb-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex flex-col items-center justify-center gap-1 animate-in fade-in">
-            <div className="flex items-center gap-1.5">
+          <div className="p-3.5 mb-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#091b14] to-slate-900 border-2 border-emerald-500/70 text-center animate-in fade-in shadow-[0_0_25px_rgba(16,185,129,0.3)]">
+            <div className="flex items-center justify-center gap-1.5 text-emerald-300 font-black text-xs uppercase tracking-wider mb-1">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Link aberto em nova guia!</span>
+              <span>1 Anúncio Aberto • Acessando Download</span>
             </div>
-            <span className="text-[11px] text-emerald-400/90 font-normal">
-              Seu download deve começar automaticamente pelo navegador.
-            </span>
+            <p className="text-xs text-slate-200 mb-2 leading-relaxed">
+              {redirectCountdown !== null && redirectCountdown > 0
+                ? `Enviando para o download do jogo em ${redirectCountdown} segundo(s)...`
+                : 'Redirecionando agora para o link de download! Se não abrir automaticamente:'}
+            </p>
+            <a
+              href={targetDriveUrl || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-black font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Download className="w-4 h-4 shrink-0" />
+              <span>Abrir Download Direto do Jogo</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         )}
 
         {/* Actions */}
         <div className="w-full space-y-2.5">
-          {/* Main Download Button (otimizado e 100% funcional no celular) */}
-          <a
-            href={targetDriveUrl || '#'}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={handleDownloadClick}
-            className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
-          >
-            <Download className="w-4 h-4 shrink-0" />
-            <span>Fazer Download Agora (Link Direto)</span>
-            <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
-          </a>
+          {/* Main Download Button */}
+          {!downloadStarted ? (
+            <button
+              type="button"
+              onClick={handleDownloadClick}
+              className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
+            >
+              <Download className="w-4 h-4 shrink-0" />
+              <span>Fazer Download Agora</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            </button>
+          ) : (
+            <a
+              href={targetDriveUrl || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
+            >
+              <Download className="w-4 h-4 shrink-0" />
+              <span>Link Liberado (Clique para Acessar)</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
+            </a>
+          )}
 
           {/* Extra Download Links (Unlocker / Partes Adicionais) */}
           {extraLinks && extraLinks.length > 0 && (
@@ -265,25 +310,6 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
               <span>Entrar no Grupo Telegram</span>
               <ExternalLink className="w-3 h-3" />
             </a>
-          </div>
-
-          {/* Banner de Oferta Alternada Mercado Livre */}
-          <div className="mt-3 p-3 rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#18120a] to-slate-900 border border-amber-500/35 text-center shadow-[0_0_15px_rgba(245,158,11,0.12)]">
-            <div className="flex items-center justify-center gap-1.5 text-amber-300 font-bold text-xs mb-1">
-              <ShoppingBag className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span>Oferta Patrocinada • Mercado Livre</span>
-            </div>
-            <p className="text-[11px] text-slate-300 mb-2 leading-relaxed">
-              Ofertas em games, controles e acessórios no Mercado Livre com link oficial parceiro do canal.
-            </p>
-            <button
-              type="button"
-              onClick={() => triggerAffiliateLink()}
-              className="py-1.5 px-3 rounded-lg bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:brightness-110 active:scale-95 text-black font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer inline-flex items-center gap-1.5 shadow-md shadow-amber-500/20"
-            >
-              <span>Ver Oferta Alternada do Dia</span>
-              <ExternalLink className="w-3 h-3 text-black" />
-            </button>
           </div>
 
           <p className="text-[11px] text-slate-400 pt-1 leading-relaxed">

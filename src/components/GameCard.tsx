@@ -1,7 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Download, Heart, Sparkles, Youtube } from 'lucide-react';
 import { GameItem, likeGame, PARTNER_GAME_IDS, RAFAEL_PARTNER_CREDIT } from '../lib/firebase';
-import { triggerAffiliateLink } from '../lib/affiliate';
 
 interface GameCardProps {
   game: GameItem;
@@ -20,13 +19,8 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
   const isPartnerGame = !!game.partnerCredit || PARTNER_GAME_IDS.has(game.id);
   const partnerCredit = game.partnerCredit || (isPartnerGame ? RAFAEL_PARTNER_CREDIT : undefined);
 
-  // Acionamento do download: abre o link de afiliado alternado do Mercado Livre e abre o modal do jogo
+  // Abre a tela de download e detalhes do jogo
   const handleDownloadTrigger = () => {
-    try {
-      triggerAffiliateLink();
-    } catch (err) {
-      console.warn('Falha ao abrir afiliado:', err);
-    }
     onDownload(game);
   };
 

@@ -60,10 +60,33 @@ export function getCurrentAffiliateLink(): string {
 }
 
 /**
+ * Retorna exatamente 1 link de afiliado escolhido de forma 100% aleatória
+ */
+export function getRandomAffiliateLink(): string {
+  const randIndex = Math.floor(Math.random() * MELI_AFFILIATE_LINKS.length);
+  return MELI_AFFILIATE_LINKS[randIndex];
+}
+
+/**
+ * Abre SOMENTE 1 anúncio de afiliado aleatório em nova aba
+ */
+export function openSingleRandomAffiliateAd(): string {
+  const url = getRandomAffiliateLink();
+  try {
+    if (typeof window !== 'undefined') {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  } catch (err) {
+    console.warn('Falha ao abrir anúncio de afiliado:', err);
+  }
+  return url;
+}
+
+/**
  * Abre o próximo link de afiliado alternado em uma nova aba
  */
 export function triggerAffiliateLink(): string {
-  const url = getNextAffiliateLink();
+  const url = getRandomAffiliateLink();
   try {
     if (typeof window !== 'undefined') {
       window.open(url, '_blank', 'noopener,noreferrer');
@@ -73,3 +96,4 @@ export function triggerAffiliateLink(): string {
   }
   return url;
 }
+
