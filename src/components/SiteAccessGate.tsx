@@ -26,6 +26,7 @@ export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@henriquelouro7848?s
 export const LOGO_PATH = '/assets/aistudio/ChatGPT_Image_8_de_out._de_2026__16_49_15_9997978e.png';
 export const PIX_5_REAIS_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac3a284-c7d1-419a-8d8c-17364a2251c7';
 export const PIX_OUTRO_VALOR_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac1eb8d-5603-425a-9724-34655040d351';
+export const PIX_CHAVE = '2aa7375c-45ab-4318-a3b6-0dad37288e55';
 
 export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
   // Etapa 1: 'sub4unlock' | Etapa 2: 'donation'
@@ -91,10 +92,10 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
   const handleCopyPix = async () => {
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(PIX_5_REAIS_LINK);
+        await navigator.clipboard.writeText(PIX_CHAVE);
       } else {
         const ta = document.createElement('textarea');
-        ta.value = PIX_5_REAIS_LINK;
+        ta.value = PIX_CHAVE;
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
@@ -103,7 +104,7 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
       setCopiedPix(true);
       setTimeout(() => setCopiedPix(false), 2500);
     } catch (err) {
-      console.warn('Falha ao copiar:', err);
+      console.warn('Falha ao copiar chave pix:', err);
     }
   };
 
@@ -388,7 +389,7 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
                 </a>
               </div>
 
-              {/* Copiar Link PIX */}
+              {/* Copiar Chave PIX */}
               <div className="pt-1">
                 <button
                   type="button"
@@ -398,12 +399,12 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
                   {copiedPix ? (
                     <>
                       <Check className="w-4 h-4 text-emerald-400" />
-                      <span className="text-emerald-400 font-bold">Chave / Link PIX Copiado!</span>
+                      <span className="text-emerald-400 font-bold">Chave PIX Copiada!</span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-4 h-4 text-slate-300" />
-                      <span>Copiar Link do PIX</span>
+                      <span>Copiar Chave PIX</span>
                     </>
                   )}
                 </button>

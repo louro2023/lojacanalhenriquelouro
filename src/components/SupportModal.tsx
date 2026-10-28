@@ -15,7 +15,8 @@ import {
 export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@henriquelouro7848?sub_confirmation=1';
 export const PIX_5_REAIS_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac3a284-c7d1-419a-8d8c-17364a2251c7';
 export const PIX_OUTRO_VALOR_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac1eb8d-5603-425a-9724-34655040d351';
-export const PIX_KEY_OR_LINK = PIX_5_REAIS_LINK;
+export const PIX_CHAVE = '2aa7375c-45ab-4318-a3b6-0dad37288e55';
+export const PIX_KEY_OR_LINK = PIX_CHAVE;
 
 interface SupportModalProps {
   isOpen: boolean;
@@ -195,7 +196,7 @@ export const SupportModal: React.FC<SupportModalProps> = ({
             </a>
           </div>
 
-          {/* Copiar Link PIX */}
+          {/* Copiar Chave PIX */}
           <div className="pt-1">
             <button
               type="button"
@@ -205,12 +206,12 @@ export const SupportModal: React.FC<SupportModalProps> = ({
               {copiedPix ? (
                 <>
                   <Check className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-400 font-bold">Chave / Link PIX Copiado!</span>
+                  <span className="text-emerald-400 font-bold">Chave PIX Copiada!</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-4 h-4 text-slate-300" />
-                  <span>Copiar Link do PIX</span>
+                  <span>Copiar Chave PIX</span>
                 </>
               )}
             </button>
