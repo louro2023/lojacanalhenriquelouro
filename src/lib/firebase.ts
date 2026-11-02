@@ -74,6 +74,18 @@ export interface SupporterMessageItem {
 
 export const INITIAL_GAMES: GameItem[] = [
   {
+    id: 'saros',
+    title: 'Saros',
+    realName: 'Saros PS5',
+    platform: 'PS5',
+    driveUrl: 'https://vikingfile.com/f/0KaHHND2TW#PPSA07632',
+    coverUrl: '/covers/saros.jpg',
+    likes: 345,
+    downloads: 680,
+    developer: 'Housemarque / PlayStation Studios',
+    description: 'Ação sci-fi intensa e shooter espacial em alta fidelidade com visuais deslumbrantes e combates eletrizantes 100% testado no console PS5.',
+  },
+  {
     id: 'ace_combat_8',
     title: 'ACE COMBAT 8',
     realName: 'ACE COMBAT 8',
@@ -312,18 +324,6 @@ export const INITIAL_GAMES: GameItem[] = [
     downloads: 360,
     developer: 'Dimension / Seraphic Games',
     description: 'Terror e horror cósmico visceral inspirado no universo lendário de Pinhead e a Configuração do Lamento no PlayStation 5 formato LZ4.',
-  },
-  {
-    id: 'saros',
-    title: 'Saros',
-    realName: 'Saros LZ4',
-    platform: 'PS5',
-    driveUrl: 'https://gofile.io/d/8PISJ5eP',
-    coverUrl: '/covers/saros.jpg',
-    likes: 195,
-    downloads: 310,
-    developer: 'Housemarque / Sony Interactive',
-    description: 'Ação sci-fi intensa e roguelike espacial com visuais deslumbrantes e jogabilidade responsiva 100% testada no PS5 formato LZ4.',
   },
   {
     id: 'ufc_6',
@@ -667,10 +667,16 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
           firestoreDataMap.set(d.id, d.data());
         });
 
-        // Ensure newly introduced games sync into Firestore once if missing
+        // Ensure newly introduced games sync into Firestore, and update modified driveUrls/titles
         INITIAL_GAMES.forEach((initGame) => {
           if (!existingIds.has(initGame.id)) {
             setDoc(doc(db, 'games', initGame.id), initGame).catch(console.error);
+          } else if (firestoreDataMap.get(initGame.id)?.driveUrl !== initGame.driveUrl) {
+            updateDoc(doc(db, 'games', initGame.id), {
+              driveUrl: initGame.driveUrl,
+              realName: initGame.realName,
+              title: initGame.title,
+            }).catch(console.error);
           }
         });
 
