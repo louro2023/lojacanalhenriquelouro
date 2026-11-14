@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 
-export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@henriquelouro7848?sub_confirmation=1';
+export const YOUTUBE_CHANNEL_URL = 'https://youtube.com/@henriquelouroyt?sub_confirmation=1';
 export const PIX_5_REAIS_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac3a284-c7d1-419a-8d8c-17364a2251c7';
 export const PIX_OUTRO_VALOR_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac1eb8d-5603-425a-9724-34655040d351';
 export const PIX_CHAVE = '2aa7375c-45ab-4318-a3b6-0dad37288e55';
@@ -57,7 +57,6 @@ export const SupportModal: React.FC<SupportModalProps> = ({
   const handleSubscribeClick = () => {
     setHasSubscribedInModal(true);
     setSubscribeError('');
-    window.open(YOUTUBE_CHANNEL_URL, '_blank', 'noopener,noreferrer');
   };
 
   // Se a pessoa tentar fechar ou clicar em "mão de vaca" sem estar inscrita, bloqueia!
@@ -128,7 +127,7 @@ export const SupportModal: React.FC<SupportModalProps> = ({
               <Youtube className="w-4 h-4 fill-white" />
             </div>
             <span className="text-[11px] font-black uppercase tracking-wider text-red-400">
-              Canal Oficial @henriquelouro7848
+              Canal Oficial @henriquelouroyt
             </span>
           </div>
 
@@ -136,15 +135,17 @@ export const SupportModal: React.FC<SupportModalProps> = ({
             Não deixe de se inscrever no canal para não perder nenhum conteúdo!
           </p>
 
-          <button
-            type="button"
+          <a
+            href={YOUTUBE_CHANNEL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={handleSubscribeClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#FF0000] hover:bg-[#CC0000] active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-red-600/35 hover:shadow-red-600/55 transition-all cursor-pointer group"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#FF0000] hover:bg-[#CC0000] active:scale-95 text-white font-black text-xs uppercase tracking-wider shadow-lg shadow-red-600/35 hover:shadow-red-600/55 transition-all cursor-pointer group touch-manipulation"
           >
             <Youtube className="w-4 h-4 fill-white group-hover:scale-110 transition-transform" />
             <span>{hasSubscribedInModal || isSubscribedConfirmed ? 'Inscrição Aberta / Confirmada' : 'Inscrever-se (Obrigatório)'}</span>
             <Bell className="w-3.5 h-3.5 fill-white text-white ml-0.5" />
-          </button>
+          </a>
         </div>
 
         {/* Donation Options Container */}

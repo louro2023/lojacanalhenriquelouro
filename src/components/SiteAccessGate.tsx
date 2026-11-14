@@ -22,7 +22,7 @@ interface SiteAccessGateProps {
   onUnlock: () => void;
 }
 
-export const YOUTUBE_CHANNEL_URL = 'https://www.youtube.com/@henriquelouro7848?sub_confirmation=1';
+export const YOUTUBE_CHANNEL_URL = 'https://youtube.com/@henriquelouroyt?sub_confirmation=1';
 export const LOGO_PATH = '/assets/aistudio/ChatGPT_Image_8_de_out._de_2026__16_49_15_9997978e.png';
 export const PIX_5_REAIS_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac3a284-c7d1-419a-8d8c-17364a2251c7';
 export const PIX_OUTRO_VALOR_LINK = 'https://nubank.com.br/cobrar/3a4h2/6ac1eb8d-5603-425a-9724-34655040d351';
@@ -52,12 +52,11 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
     return () => clearTimeout(timer);
   }, [subscribeCountdown]);
 
-  // Abre o canal do YouTube com confirmação de inscrição
+  // Registra abertura do canal do YouTube com confirmação de inscrição
   const handleOpenSubscribe = () => {
     setHasClickedSubscribe(true);
     setVerificationError('');
     setSubscribeCountdown(4); // Contagem de 4 segundos
-    window.open(YOUTUBE_CHANNEL_URL, '_blank', 'noopener,noreferrer');
   };
 
   // Executa o processo de verificação Sub4Unlock OBRIGATÓRIA
@@ -217,7 +216,7 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
               <div className="p-3.5 mb-5 rounded-2xl bg-cyan-950/50 border border-cyan-400/50 text-center animate-in fade-in">
                 <p className="text-xs font-bold text-cyan-200 flex items-center justify-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
-                  <span>Verificando inscrição no canal @henriquelouro7848...</span>
+                  <span>Verificando inscrição no canal @henriquelouroyt...</span>
                 </p>
                 <div className="w-full bg-slate-800 rounded-full h-1.5 mt-2.5 overflow-hidden">
                   <div className="bg-gradient-to-r from-cyan-400 to-blue-500 h-1.5 rounded-full animate-[pulse_1s_ease-in-out_infinite] w-full" />
@@ -230,11 +229,21 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
               
               {/* ETAPA 1: Inscrever-se no Canal */}
               <div className="relative">
-                <button
-                  type="button"
-                  onClick={handleOpenSubscribe}
-                  disabled={isVerifying}
-                  className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 active:scale-[0.98] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(239,68,68,0.4)] transition-all flex items-center justify-between cursor-pointer group disabled:opacity-50"
+                <a
+                  href={YOUTUBE_CHANNEL_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-disabled={isVerifying}
+                  onClick={(e) => {
+                    if (isVerifying) {
+                      e.preventDefault();
+                      return;
+                    }
+                    handleOpenSubscribe();
+                  }}
+                  className={`w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-red-600 via-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 active:scale-[0.98] text-white font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_25px_rgba(239,68,68,0.4)] transition-all flex items-center justify-between cursor-pointer group touch-manipulation ${
+                    isVerifying ? 'opacity-50 pointer-events-none' : ''
+                  }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -247,6 +256,9 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
                       <span className="block font-black leading-tight">
                         Inscrever-se no Canal
                       </span>
+                      <span className="block text-[10px] text-red-100/90 font-semibold lowercase tracking-normal mt-0.5">
+                        @henriquelouroyt
+                      </span>
                     </div>
                   </div>
 
@@ -255,7 +267,7 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
                     <span className="text-[11px] font-bold">YouTube</span>
                     <ExternalLink className="w-3.5 h-3.5 opacity-70" />
                   </div>
-                </button>
+                </a>
               </div>
 
               {/* Status Feedback após clicar no YouTube */}
@@ -322,7 +334,7 @@ export const SiteAccessGate: React.FC<SiteAccessGateProps> = ({ onUnlock }) => {
             <div className="p-3 mb-5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 text-center">
               <div className="flex items-center justify-center gap-2 text-emerald-300 font-bold text-xs sm:text-sm">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Inscrição Confirmada no Canal @henriquelouro7848!</span>
+                <span>Inscrição Confirmada no Canal @henriquelouroyt!</span>
               </div>
             </div>
 
