@@ -13,6 +13,8 @@ import {
   Youtube,
   ShieldCheck,
   Send,
+  Search,
+  X,
 } from 'lucide-react';
 import {
   GameItem,
@@ -24,8 +26,19 @@ import {
 export const LOGO_PATH = '/assets/aistudio/ChatGPT_Image_8_de_out._de_2026__16_49_15_9997978e.png';
 const SUB4UNLOCK_KEY = 'hg_mandatory_sub4unlock_v4';
 
+function normalizeSearchText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/['’`\-_:!.,]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export default function App() {
   const [games, setGames] = useState<GameItem[]>(INITIAL_GAMES);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedGame, setSelectedGame] = useState<GameItem | null>(null);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
@@ -79,10 +92,20 @@ export default function App() {
     return <SiteAccessGate onUnlock={handleUnlockSite} />;
   }
 
-  // Ao clicar em qualquer jogo: a senha leigo não é mais necessária! Abre direto o download
+  // Ao clicar em qualquer jogo: abre direto o modal de download
   const handleGameAction = (game: GameItem) => {
     setSelectedGame(game);
   };
+
+  const normalizedQuery = normalizeSearchText(searchQuery);
+  const filteredGames = normalizedQuery
+    ? games.filter((game) => {
+        const searchable = normalizeSearchText(
+          `${game.realName} ${game.title} ${game.platform || ''}`
+        );
+        return searchable.includes(normalizedQuery);
+      })
+    : games;
 
   return (
     <div className="min-h-screen bg-[#050811] text-slate-100 flex flex-col font-sans selection:bg-cyan-400 selection:text-black">
@@ -229,16 +252,88 @@ export default function App() {
           {/* BANNER OFERTAS & ACESSÓRIOS TELEGRAM */}
           <TelegramPromoBanner />
 
-          {/* GAMES SHOWCASE GRID */}
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch justify-items-center mb-6">
-            {games.map((game) => (
-              <GameCard
-                key={game.id}
-                game={game}
-                onDownload={handleGameAction}
+          {/* ÁREA DE BUSCA NO CATÁLOGO */}
+          <section aria-label="Buscar jogo no catálogo" className="w-full max-w-2xl mb-8">
+            <label htmlFor="catalog-game-search" className="sr-only">
+              Pesquisar jogo pelo nome no catálogo
+            </label>
+            <div className="relative flex items-center">
+              <Search className="w-5 h-5 text-cyan-400 absolute left-4 pointer-events-none" />
+              <input
+                id="catalog-game-search"
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Buscar jogo pelo nome (ex: Spider-Man, God of War, Wolverine...)"
+                autoComplete="off"
+                className="w-full h-12 sm:h-13 pl-12 pr-12 rounded-2xl bg-[#0c1427]/95 border border-cyan-500/35 focus:border-cyan-400 focus:outline-none focus:ring-2 focus:ring-cyan-400/25 text-sm sm:text-base text-white placeholder:text-slate-400 shadow-[0_8px_25px_rgba(0,0,0,0.45)] transition-all"
               />
-            ))}
-          </div>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  aria-label="Limpar busca"
+                  title="Limpar busca"
+                  className="absolute right-3 w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <div className="mt-2.5 flex items-center justify-between px-1 text-xs text-slate-400 tabular-nums">
+              <span>
+                {normalizedQuery ? (
+                  <>
+                    Mostrando <strong className="text-cyan-300 font-bold">{filteredGames.length}</strong>{' '}
+                    {filteredGames.length === 1 ? 'resultado' : 'resultados'} para &quot;{searchQuery.trim()}&quot;
+                  </>
+                ) : (
+                  <>
+                    <strong className="text-slate-200 font-semibold">{games.length}</strong> jogos disponíveis no catálogo
+                  </>
+                )}
+              </span>
+              {normalizedQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="text-cyan-400 hover:text-cyan-300 font-semibold hover:underline cursor-pointer"
+                >
+                  Mostrar todos
+                </button>
+              )}
+            </div>
+          </section>
+
+          {/* GAMES SHOWCASE GRID */}
+          {filteredGames.length > 0 ? (
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch justify-items-center mb-6">
+              {filteredGames.map((game) => (
+                <GameCard
+                  key={game.id}
+                  game={game}
+                  onDownload={handleGameAction}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="w-full max-w-lg rounded-3xl bg-[#0c1427]/90 border border-cyan-500/25 p-8 text-center mb-8 shadow-[0_15px_40px_rgba(0,0,0,0.6)]">
+              <Search className="w-10 h-10 text-cyan-400/80 mx-auto mb-3" />
+              <h3 className="text-lg font-bold text-white mb-1">
+                Nenhum jogo encontrado
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-400 mb-5">
+                Não encontramos nenhum título correspondente a &quot;{searchQuery.trim()}&quot; no catálogo.
+              </p>
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-xs uppercase tracking-wider hover:brightness-110 active:scale-[0.98] transition-all cursor-pointer"
+              >
+                Limpar Busca e Ver Todos
+              </button>
+            </div>
+          )}
 
           {/* Real-time Community Board */}
           <RealtimeSupporterBoard />
@@ -282,6 +377,7 @@ export default function App() {
         const activeGame = games.find((g) => g.id === selectedGame.id) || selectedGame;
         return (
           <DownloadModal
+            key={activeGame.id}
             isOpen={!!selectedGame}
             onClose={() => setSelectedGame(null)}
             targetGameName={activeGame.realName}

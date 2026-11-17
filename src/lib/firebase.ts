@@ -112,14 +112,26 @@ export const INITIAL_GAMES: GameItem[] = [
   {
     id: 'spiderman_2',
     title: "Marvel's Spider-Man 2",
-    realName: "Marvel's Spider-Man 2 LZ4",
+    realName: "Marvel's Spider-Man 2 ZSTD",
     platform: 'PS5',
-    driveUrl: 'https://vik1ngfile.site/f/vLMCxg49mW#LIZARD',
+    driveUrl: 'https://vik1ngfile.site/f/k1OqDK1mom',
     coverUrl: '/covers/spiderman_2.jpg',
     likes: 415,
     downloads: 920,
     developer: 'Insomniac Games / PlayStation Studios',
-    description: 'Peter Parker e Miles Morales enfrentam a fúria do simbionte Venom e Kraven o Caçador em Nova York no formato LZ4 otimizado para o PS5.',
+    description: 'Peter Parker e Miles Morales enfrentam a fúria do simbionte Venom e Kraven o Caçador em Nova York no formato ZSTD otimizado para o PS5.',
+  },
+  {
+    id: 'spiderman_miles_morales',
+    title: "Marvel's Spider-Man: Miles Morales",
+    realName: "Marvel's Spider-Man Miles Morales ZSTD",
+    platform: 'PS5',
+    driveUrl: "https://vikingfile.com/f/PJaCDIjqTp#Marvel's",
+    coverUrl: '/covers/spiderman_miles_morales.jpg',
+    likes: 368,
+    downloads: 795,
+    developer: 'Insomniac Games / PlayStation Studios',
+    description: 'Acompanhe Miles Morales dominando novos poderes bioelétricos e camuflagem para proteger Nova York no formato ZSTD otimizado para o PS5.',
   },
   {
     id: 'astro_bot',
@@ -160,14 +172,14 @@ export const INITIAL_GAMES: GameItem[] = [
   {
     id: 'spiderman_remastered',
     title: "Marvel's Spider-Man Remastered",
-    realName: 'Marvels Spider Man Remastered',
+    realName: "Marvel's Spider-Man Remasterizado ZSTD",
     platform: 'PS5',
-    driveUrl: 'https://vik1ngfile.site/f/s1fzcUUOs0#LIZARD',
+    driveUrl: 'https://vik1ngfile.site/f/Ms9VvjacNM',
     coverUrl: '/covers/spiderman_remastered.jpg',
     likes: 324,
     downloads: 780,
     developer: 'Insomniac Games / PlayStation Studios',
-    description: 'A aventura definitiva de Peter Parker totalmente remasterizada a 60 FPS com Ray Tracing e a DLC A Cidade que Nunca Dorme no PlayStation 5.',
+    description: 'A aventura definitiva de Peter Parker totalmente remasterizada a 60 FPS com Ray Tracing e a DLC A Cidade que Nunca Dorme no formato ZSTD para PlayStation 5.',
   },
   {
     id: 'resident_evil_4_remake',
@@ -671,11 +683,15 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
         INITIAL_GAMES.forEach((initGame) => {
           if (!existingIds.has(initGame.id)) {
             setDoc(doc(db, 'games', initGame.id), initGame).catch(console.error);
-          } else if (firestoreDataMap.get(initGame.id)?.driveUrl !== initGame.driveUrl) {
+          } else if (
+            firestoreDataMap.get(initGame.id)?.driveUrl !== initGame.driveUrl ||
+            firestoreDataMap.get(initGame.id)?.realName !== initGame.realName
+          ) {
             updateDoc(doc(db, 'games', initGame.id), {
               driveUrl: initGame.driveUrl,
               realName: initGame.realName,
               title: initGame.title,
+              description: initGame.description || '',
             }).catch(console.error);
           }
         });

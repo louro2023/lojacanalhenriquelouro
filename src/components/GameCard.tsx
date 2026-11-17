@@ -1,6 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Download, Heart, Sparkles, Youtube } from 'lucide-react';
 import { GameItem, likeGame, PARTNER_GAME_IDS, RAFAEL_PARTNER_CREDIT } from '../lib/firebase';
+import {
+  getCurrentAffiliateLink,
+  advanceAffiliateLink,
+  subscribeAffiliateIndex,
+} from '../lib/affiliate';
 
 interface GameCardProps {
   game: GameItem;
@@ -13,14 +18,24 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
   const [rotateX, setRotateX] = useState(0);
   const [rotateY, setRotateY] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [affiliateUrl, setAffiliateUrl] = useState<string>(() => getCurrentAffiliateLink());
   const cardRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setAffiliateUrl(getCurrentAffiliateLink());
+    return subscribeAffiliateIndex(() => {
+      setAffiliateUrl(getCurrentAffiliateLink());
+    });
+  }, []);
 
   // Garante a atribuição permanente do parceiro no card
   const isPartnerGame = !!game.partnerCredit || PARTNER_GAME_IDS.has(game.id);
   const partnerCredit = game.partnerCredit || (isPartnerGame ? RAFAEL_PARTNER_CREDIT : undefined);
 
-  // Abre a tela de download e detalhes do jogo
+  // O link <a> abre SOMENTE 1 página extra com o link de afiliado da vez em nova aba,
+  // avança a fila para o próximo link e abre imediatamente a janela de download do jogo
   const handleDownloadTrigger = () => {
+    advanceAffiliateLink();
     onDownload(game);
   };
 
@@ -105,9 +120,12 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
       </div>
 
       {/* REAL GAME IMAGE COVER CONTAINER */}
-      <div
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer"
         onClick={handleDownloadTrigger}
-        className="relative w-full aspect-[3/4] max-h-[360px] rounded-2xl overflow-hidden bg-black/60 border-2 border-cyan-500/30 group-hover:border-cyan-400/80 shadow-2xl cursor-pointer mb-5"
+        className="relative block w-full aspect-[3/4] max-h-[360px] rounded-2xl overflow-hidden bg-black/60 border-2 border-cyan-500/30 group-hover:border-cyan-400/80 shadow-2xl cursor-pointer mb-5 touch-manipulation"
         title={`Clique para baixar ${game.realName}`}
       >
         {/* Official PS5 Header Bar on Cover */}
@@ -157,7 +175,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
             Senha: SuperPSX ou DLPSGAME.COM OU [DLPSGAME.COM]
           </span>
         </div>
-      </div>
+      </a>
 
       {/* REAL GAME NAME & DETAILS */}
       <div className="w-full text-center mb-5 flex-1 flex flex-col justify-between">
@@ -184,15 +202,17 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onDownload }) => {
         </div>
       </div>
 
-      {/* DIRECT BUTTON */}
-      <button
-        type="button"
+      {/* DIRECT DOWNLOAD BUTTON (abre 1 link de afiliado em nova aba e exibe o modal do jogo) */}
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer"
         onClick={handleDownloadTrigger}
         className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:shadow-[0_0_30px_rgba(0,210,255,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer group touch-manipulation select-none"
       >
         <Download className="w-4 h-4 group-hover:scale-110 transition-transform shrink-0" />
         <span>Fazer Download</span>
-      </button>
+      </a>
     </div>
   );
 };

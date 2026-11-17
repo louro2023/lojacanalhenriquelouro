@@ -8,7 +8,6 @@ import {
   Copy,
   Check,
   Heart,
-  Gamepad2,
   Send,
   Youtube,
 } from 'lucide-react';
@@ -19,7 +18,6 @@ import {
   PARTNER_GAME_IDS,
   RAFAEL_PARTNER_CREDIT,
 } from '../lib/firebase';
-import { openSingleRandomAffiliateAd } from '../lib/affiliate';
 
 interface DownloadModalProps {
   isOpen: boolean;
@@ -43,46 +41,27 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
   extraLinks,
 }) => {
   const [downloadStarted, setDownloadStarted] = useState(false);
-  const [hasTriggeredAd, setHasTriggeredAd] = useState(false);
-  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
   const [copied, setCopied] = useState(false);
 
-  // Redireciona para o link de download após a contagem regressiva
+  // Reinicia os feedbacks visuais ao trocar de jogo
   useEffect(() => {
-    if (redirectCountdown === null) return;
-    if (redirectCountdown <= 0) {
-      if (targetDriveUrl) {
-        window.location.href = targetDriveUrl;
-      }
-      return;
+    if (isOpen) {
+      setDownloadStarted(false);
+      setCopied(false);
     }
-    const timer = setTimeout(() => {
-      setRedirectCountdown((prev) => (prev !== null ? prev - 1 : 0));
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [redirectCountdown, targetDriveUrl]);
+  }, [isOpen, targetGameId]);
 
   if (!isOpen) return null;
 
-  // Garante de forma 100% definitiva a exibição do canal parceiro nos 18 novos títulos
+  // Garante de forma 100% definitiva a exibição do canal parceiro nos títulos fornecidos por ele
   const effectivePartnerCredit =
     partnerCredit || (PARTNER_GAME_IDS.has(targetGameId) ? RAFAEL_PARTNER_CREDIT : undefined);
 
-  // Ao clicar em download:
-  // 1. Exibe SOMENTE 1 anúncio aleatório em nova aba
-  // 2. Após isso, envia diretamente para o link de download do jogo
+  // O link de afiliado único já foi aberto ao clicar no card do jogo;
+  // aqui apenas contabiliza o download e prossegue diretamente para o link oficial do jogo
   const handleDownloadClick = () => {
     setDownloadStarted(true);
     incrementDownload(targetGameId).catch(console.error);
-
-    // Abre SOMENTE 1 anúncio aleatório na sessão deste download
-    if (!hasTriggeredAd) {
-      setHasTriggeredAd(true);
-      openSingleRandomAffiliateAd();
-    }
-
-    // Inicia o redirecionamento imediato para o download oficial do jogo
-    setRedirectCountdown(2);
   };
 
   const handleCopyLink = async () => {
@@ -114,7 +93,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
       />
 
       {/* Modal Dialog */}
-      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#0c1424] via-[#090f1a] to-[#050811] border border-cyan-500/35 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(0,210,255,0.25)] p-6 sm:p-7 z-10 animate-in fade-in zoom-in-95 duration-200 text-center">
+      <div className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-[#0c1424] via-[#090f1a] to-[#050811] border border-cyan-500/35 shadow-[0_25px_60px_rgba(0,0,0,0.95),0_0_40px_rgba(0,210,255,0.25)] p-6 sm:p-7 z-10 animate-in fade-in zoom-in-95 duration-200 text-center max-h-[92vh] overflow-y-auto">
         
         {/* Close Button */}
         <button
@@ -142,7 +121,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
         </h3>
 
         <p className="text-xs text-slate-300 mt-1 mb-5 leading-relaxed">
-          Link oficial de alta velocidade no servidor seguro. Clique no botão abaixo para iniciar o download ou copie o link direto.
+          Oferta parceira aberta em nova guia! Agora clique no botão abaixo para prosseguir para o download oficial do jogo.
         </p>
 
         {/* Informação sobre Senha de Descompactação */}
@@ -152,7 +131,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </p>
         </div>
 
-        {/* Crédito Exclusivo do Canal Parceiro (Exibido SOMENTE nos títulos novos fornecidos por ele) */}
+        {/* Crédito Exclusivo do Canal Parceiro (Exibido SOMENTE nos títulos fornecidos por ele) */}
         {effectivePartnerCredit && (
           <div className="p-3.5 mb-4 rounded-2xl bg-gradient-to-r from-red-950/70 via-[#180a0e] to-slate-900 border-2 border-red-500/50 text-center animate-in fade-in shadow-[0_0_25px_rgba(239,68,68,0.3)]">
             <div className="flex items-center justify-center gap-1.5 text-rose-300 font-black text-xs uppercase tracking-wider mb-1">
@@ -176,58 +155,35 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           </div>
         )}
 
-        {/* Feedback de Redirecionamento após o Anúncio */}
+        {/* Confirmação após iniciar o download */}
         {downloadStarted && (
-          <div className="p-3.5 mb-4 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#091b14] to-slate-900 border-2 border-emerald-500/70 text-center animate-in fade-in shadow-[0_0_25px_rgba(16,185,129,0.3)]">
-            <div className="flex items-center justify-center gap-1.5 text-emerald-300 font-black text-xs uppercase tracking-wider mb-1">
+          <div className="p-3 mb-4 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 text-xs font-bold flex flex-col items-center justify-center gap-1 animate-in fade-in">
+            <div className="flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>1 Anúncio Aberto • Acessando Download</span>
+              <span>Link do jogo aberto em nova guia!</span>
             </div>
-            <p className="text-xs text-slate-200 mb-2 leading-relaxed">
-              {redirectCountdown !== null && redirectCountdown > 0
-                ? `Enviando para o download do jogo em ${redirectCountdown} segundo(s)...`
-                : 'Redirecionando agora para o link de download! Se não abrir automaticamente:'}
-            </p>
-            <a
-              href={targetDriveUrl || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-black font-black text-xs uppercase tracking-wider shadow-lg hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Download className="w-4 h-4 shrink-0" />
-              <span>Abrir Download Direto do Jogo</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
+            <span className="text-[11px] text-emerald-400/90 font-normal">
+              Seu download deve iniciar pelo servidor do jogo.
+            </span>
           </div>
         )}
 
         {/* Actions */}
         <div className="w-full space-y-2.5">
-          {/* Main Download Button */}
-          {!downloadStarted ? (
-            <button
-              type="button"
-              onClick={handleDownloadClick}
-              className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-cyan-400 via-sky-400 to-blue-500 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(0,210,255,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
-            >
-              <Download className="w-4 h-4 shrink-0" />
-              <span>Fazer Download Agora</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
-            </button>
-          ) : (
-            <a
-              href={targetDriveUrl || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-black font-black text-xs sm:text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
-            >
-              <Download className="w-4 h-4 shrink-0" />
-              <span>Link Liberado (Clique para Acessar)</span>
-              <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
-            </a>
-          )}
+          {/* Botão Direto para o Download do Jogo (sem anúncios extras) */}
+          <a
+            href={targetDriveUrl || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={handleDownloadClick}
+            className="w-full py-4 px-4 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-black font-black text-sm uppercase tracking-wider shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:brightness-110 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer touch-manipulation select-none"
+          >
+            <Download className="w-4 h-4 shrink-0" />
+            <span>Prosseguir para Download do Jogo</span>
+            <ExternalLink className="w-3.5 h-3.5 opacity-70 shrink-0" />
+          </a>
 
-          {/* Extra Download Links (Unlocker / Partes Adicionais) */}
+          {/* Extra Download Links (Unlocker / Partes Adicionais / Espelhos) */}
           {extraLinks && extraLinks.length > 0 && (
             <div className="space-y-2 pt-1 pb-1">
               <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider block text-left">
@@ -239,7 +195,8 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                   href={extra.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.15)]"
+                  onClick={handleDownloadClick}
+                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.15)] touch-manipulation"
                 >
                   <Download className="w-3.5 h-3.5 text-amber-400" />
                   <span>{extra.name}</span>

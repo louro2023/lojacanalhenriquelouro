@@ -1,99 +1,77 @@
-// Gerenciador de Rotação de Links de Afiliado Mercado Livre
-// Lista fornecida com 14 links alternados a cada clique
+// Gerenciador de Rotação Sequencial de Links de Afiliado (Amazon, AliExpress e Mercado Livre)
+// Substitui a lista anterior pelos 11 links fornecidos, alternando em ordem a cada clique
 
-export const MELI_AFFILIATE_LINKS: string[] = [
-  'https://meli.la/228QpuZ',
+export const AFFILIATE_LINKS: string[] = [
+  'https://link.amazon/B01IRMR4F',
+  'https://s.click.aliexpress.com/e/_mPq0raB',
+  'https://meli.la/16Zz5Re',
+  'https://meli.la/2Ga4Kp3',
+  'https://meli.la/119W5m2',
+  'https://s.click.aliexpress.com/e/_mrHftML',
   'https://meli.la/1BZ9ckM',
   'https://meli.la/1ikErww',
-  'https://meli.la/2EBwarN',
-  'https://meli.la/294hvEp',
-  'https://meli.la/24YC3rq',
-  'https://meli.la/2nXsGGC',
-  'https://meli.la/12RUq5Y',
-  'https://meli.la/2tbuDdz',
-  'https://meli.la/2DEaWAh',
-  'https://meli.la/2718YHM',
-  'https://meli.la/2UsEXaa',
-  'https://meli.la/1PUkZJi',
-  'https://meli.la/2JrJapP',
+  'https://s.click.aliexpress.com/e/_mtuQIFl',
+  'https://s.click.aliexpress.com/e/_m02VD9N',
+  'https://meli.la/2uuSaJN',
 ];
 
-const STORAGE_KEY = 'hg_meli_affiliate_index_v1';
+export const MELI_AFFILIATE_LINKS = AFFILIATE_LINKS;
 
-/**
- * Retorna o próximo link de afiliado da lista alternada e atualiza o ponteiro
- */
-export function getNextAffiliateLink(): string {
+const STORAGE_KEY = 'hg_affiliate_rotation_index_v2';
+let inMemoryIndex = 0;
+const listeners = new Set<() => void>();
+
+function readIndex(): number {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    let index = raw !== null ? parseInt(raw, 10) : 0;
-    if (isNaN(index) || index < 0 || index >= MELI_AFFILIATE_LINKS.length) {
-      index = 0;
+    if (raw !== null) {
+      const parsed = parseInt(raw, 10);
+      if (!isNaN(parsed) && parsed >= 0 && parsed < AFFILIATE_LINKS.length) {
+        inMemoryIndex = parsed;
+        return parsed;
+      }
     }
-
-    const selectedLink = MELI_AFFILIATE_LINKS[index];
-    const nextIndex = (index + 1) % MELI_AFFILIATE_LINKS.length;
-    localStorage.setItem(STORAGE_KEY, String(nextIndex));
-
-    return selectedLink;
   } catch {
-    // Fallback randômico caso o localStorage esteja indisponível
-    const randIndex = Math.floor(Math.random() * MELI_AFFILIATE_LINKS.length);
-    return MELI_AFFILIATE_LINKS[randIndex];
+    // Fallback em memória se localStorage estiver bloqueado
   }
+  return inMemoryIndex;
+}
+
+function writeIndex(nextIndex: number): void {
+  const safeIndex = ((nextIndex % AFFILIATE_LINKS.length) + AFFILIATE_LINKS.length) % AFFILIATE_LINKS.length;
+  inMemoryIndex = safeIndex;
+  try {
+    localStorage.setItem(STORAGE_KEY, String(safeIndex));
+  } catch {
+    // Ignora falha de escrita em modo privado/iframe restrito
+  }
+  listeners.forEach((listener) => listener());
 }
 
 /**
- * Consulta o link atual da rotação sem avançar o ponteiro (para previews ou links estáticos)
+ * Inscreve componentes para atualizar o link atual quando a fila avançar
+ */
+export function subscribeAffiliateIndex(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+/**
+ * Consulta o link de afiliado atual da rotação sem avançar o ponteiro
  */
 export function getCurrentAffiliateLink(): string {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    let index = raw !== null ? parseInt(raw, 10) : 0;
-    if (isNaN(index) || index < 0 || index >= MELI_AFFILIATE_LINKS.length) {
-      index = 0;
-    }
-    return MELI_AFFILIATE_LINKS[index];
-  } catch {
-    return MELI_AFFILIATE_LINKS[0];
-  }
+  const index = readIndex();
+  return AFFILIATE_LINKS[index];
 }
 
 /**
- * Retorna exatamente 1 link de afiliado escolhido de forma 100% aleatória
+ * Retorna o link atual e avança o ponteiro sequencialmente para o próximo link da fila
  */
-export function getRandomAffiliateLink(): string {
-  const randIndex = Math.floor(Math.random() * MELI_AFFILIATE_LINKS.length);
-  return MELI_AFFILIATE_LINKS[randIndex];
+export function advanceAffiliateLink(): string {
+  const currentIndex = readIndex();
+  const currentUrl = AFFILIATE_LINKS[currentIndex];
+  writeIndex(currentIndex + 1);
+  return currentUrl;
 }
-
-/**
- * Abre SOMENTE 1 anúncio de afiliado aleatório em nova aba
- */
-export function openSingleRandomAffiliateAd(): string {
-  const url = getRandomAffiliateLink();
-  try {
-    if (typeof window !== 'undefined') {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  } catch (err) {
-    console.warn('Falha ao abrir anúncio de afiliado:', err);
-  }
-  return url;
-}
-
-/**
- * Abre o próximo link de afiliado alternado em uma nova aba
- */
-export function triggerAffiliateLink(): string {
-  const url = getRandomAffiliateLink();
-  try {
-    if (typeof window !== 'undefined') {
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-  } catch (err) {
-    console.warn('Falha ao abrir link de afiliado:', err);
-  }
-  return url;
-}
-
