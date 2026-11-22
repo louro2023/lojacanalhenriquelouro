@@ -9,9 +9,6 @@ import {
   Gamepad2,
   Sparkles,
   Heart,
-  Lock,
-  Youtube,
-  ShieldCheck,
   Send,
   Search,
   X,
@@ -24,7 +21,7 @@ import {
 } from './lib/firebase';
 
 export const LOGO_PATH = '/assets/aistudio/ChatGPT_Image_8_de_out._de_2026__16_49_15_9997978e.png';
-const SUB4UNLOCK_KEY = 'hg_mandatory_sub4unlock_v4';
+const SUPPORT_GATE_KEY = 'hg_support_prompt_seen_v1';
 
 function normalizeSearchText(value: string): string {
   return value
@@ -42,18 +39,17 @@ export default function App() {
   const [selectedGame, setSelectedGame] = useState<GameItem | null>(null);
   const [isSupportModalOpen, setIsSupportModalOpen] = useState(false);
 
-  // Controle estrito de acesso via Sub4Unlock (Inscrição Obrigatória para Desbloquear)
+  // Exibe a tela inicial de pedido de apoio/doação uma vez por sessão antes de entrar no catálogo
   const [isSiteUnlocked, setIsSiteUnlocked] = useState<boolean>(() => {
     try {
-      // Limpa chaves legadas para garantir que o fluxo de inscrição obrigatória seja sempre acionado
       sessionStorage.removeItem('hg_site_unlocked');
       sessionStorage.removeItem('hg_channel_subscribed_v3');
-      return sessionStorage.getItem(SUB4UNLOCK_KEY) === 'true';
+      sessionStorage.removeItem('hg_mandatory_sub4unlock_v4');
+      return sessionStorage.getItem(SUPPORT_GATE_KEY) === 'true';
     } catch {
       return false;
     }
   });
-
 
   // Escuta os jogos cadastrados no Firebase em tempo real
   useEffect(() => {
@@ -64,10 +60,10 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
-  // Quando o fluxo de Sub4Unlock e tela de apoio for concluído
+  // Quando o visitante prosseguir pela tela de apoio/doação
   const handleUnlockSite = () => {
     try {
-      sessionStorage.setItem(SUB4UNLOCK_KEY, 'true');
+      sessionStorage.setItem(SUPPORT_GATE_KEY, 'true');
     } catch {
       // ignore
     }
@@ -75,19 +71,7 @@ export default function App() {
     setIsSupportModalOpen(false);
   };
 
-  // Permite trancar o acesso novamente para testar a tela Sub4Unlock
-  const handleLockSite = () => {
-    try {
-      sessionStorage.removeItem(SUB4UNLOCK_KEY);
-      sessionStorage.removeItem('hg_site_unlocked');
-      sessionStorage.removeItem('hg_channel_subscribed_v3');
-    } catch {
-      // ignore
-    }
-    setIsSiteUnlocked(false);
-  };
-
-  // Se o site ainda não foi desbloqueado pela inscrição obrigatória, exibe a tela de Sub4Unlock
+  // Exibe a tela de pedido de apoio/doação antes de liberar o catálogo
   if (!isSiteUnlocked) {
     return <SiteAccessGate onUnlock={handleUnlockSite} />;
   }
@@ -138,12 +122,6 @@ export default function App() {
 
           {/* Controls & Support Trigger */}
           <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            {/* Status da Inscrição */}
-            <div className="hidden lg:inline-flex items-center gap-1.5 h-9 px-3 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-xs font-semibold text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.12)] whitespace-nowrap">
-              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-              <span>Inscrito Verificado</span>
-            </div>
-
             {/* Botão Grupo VIP Telegram */}
             <a
               href={TELEGRAM_GROUP_URL}
@@ -166,17 +144,6 @@ export default function App() {
               <span className="hidden sm:inline">Apoiar Canal (PIX)</span>
               <span className="sm:hidden">Apoiar (PIX)</span>
             </button>
-
-            {/* Botão de Trancar Acesso (Sub4Unlock) */}
-            <button
-              type="button"
-              onClick={handleLockSite}
-              title="Trancar Acesso para testar tela Sub4Unlock"
-              className="h-9 px-2.5 sm:px-3 rounded-full bg-slate-800/60 hover:bg-slate-700/80 active:scale-95 text-slate-300 hover:text-cyan-300 border border-slate-700/60 hover:border-cyan-500/40 text-xs font-medium flex items-center gap-1.5 transition-all whitespace-nowrap cursor-pointer"
-            >
-              <Lock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-              <span className="hidden md:inline">Trancar</span>
-            </button>
           </div>
 
         </div>
@@ -188,7 +155,7 @@ export default function App() {
           <div className="flex items-center gap-2 justify-center sm:justify-start">
             <Sparkles className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
             <span>
-              Catálogo de jogos liberado para inscritos! Aproveite os lançamentos testados e funcionando no PS5.
+              Catálogo de jogos liberado! Aproveite os lançamentos testados e funcionando no PS5.
             </span>
           </div>
 
@@ -222,7 +189,7 @@ export default function App() {
             </div>
             <div className="text-center sm:text-left">
               <div className="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-400/40 text-[10px] font-black uppercase tracking-wider text-cyan-300 mb-1">
-                Dúvidas PS5 • Inscritos Oficiais
+                Canal Henrique Louro • Catálogo PS5
               </div>
               <h2 className="text-base sm:text-lg font-black text-white uppercase tracking-tight font-sans">
                 Jogos Testados &amp; Prontos para PS5
@@ -365,11 +332,10 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Modal de Solicitação de Apoio (Abre automaticamente sempre que alguém entrar no site) */}
+      {/* Modal de Solicitação de Apoio / Doação */}
       <SupportModal
         isOpen={isSupportModalOpen}
         onClose={() => setIsSupportModalOpen(false)}
-        isSubscribedConfirmed={isSiteUnlocked}
       />
 
       {/* Modal de Download Direto (Abre diretamente ao clicar no jogo, sem senha!) */}
