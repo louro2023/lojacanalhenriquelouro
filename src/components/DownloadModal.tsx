@@ -187,7 +187,7 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
           {extraLinks && extraLinks.length > 0 && (
             <div className="space-y-2 pt-1 pb-1">
               <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider block text-left">
-                📦 Arquivos Adicionais / Desbloqueio:
+                📦 Opções de Download / Arquivos Adicionais:
               </span>
               {extraLinks.map((extra, idx) => (
                 <a

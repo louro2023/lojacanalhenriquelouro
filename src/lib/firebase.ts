@@ -74,6 +74,28 @@ export interface SupporterMessageItem {
 
 export const INITIAL_GAMES: GameItem[] = [
   {
+    id: 'gta_vi',
+    title: 'Grand Theft Auto VI GTA 6',
+    realName: 'Grand Theft Auto VI',
+    platform: 'PS5',
+    driveUrl: 'https://vikingfile.com/f/ZbYf8KbOWD#GRAND',
+    coverUrl: '/covers/gta_vi.jpg',
+    likes: 512,
+    downloads: 1120,
+    developer: 'Rockstar Games',
+    description: 'Explore o vibrante estado de Leonida e as ruas ensolaradas de Vice City no maior mundo aberto da Rockstar Games, disponível nas versões FPKG BKP 4.xx e ZSTD para PS5.',
+    extraLinks: [
+      {
+        name: 'Download FPKG BKP 4.xx',
+        url: 'https://vikingfile.com/f/ZbYf8KbOWD#GRAND',
+      },
+      {
+        name: 'Download ZSTD',
+        url: 'https://vikingfile.com/f/9bEYrqnxdS',
+      },
+    ],
+  },
+  {
     id: 'saros',
     title: 'Saros',
     realName: 'Saros PS5',

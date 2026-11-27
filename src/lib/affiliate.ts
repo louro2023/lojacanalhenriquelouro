@@ -1,23 +1,17 @@
-// Gerenciador de Rotação Sequencial de Links de Afiliado (Amazon, AliExpress e Mercado Livre)
-// Substitui a lista anterior pelos 11 links fornecidos, alternando em ordem a cada clique
+// Gerenciador de Rotação de Links de Afiliado (Mercado Livre)
+// Substitui a lista anterior pelos 5 links fornecidos, mantendo o padrão de 1 página extra por clique
 
 export const AFFILIATE_LINKS: string[] = [
-  'https://link.amazon/B01IRMR4F',
-  'https://s.click.aliexpress.com/e/_mPq0raB',
-  'https://meli.la/16Zz5Re',
-  'https://meli.la/2Ga4Kp3',
-  'https://meli.la/119W5m2',
-  'https://s.click.aliexpress.com/e/_mrHftML',
-  'https://meli.la/1BZ9ckM',
-  'https://meli.la/1ikErww',
-  'https://s.click.aliexpress.com/e/_mtuQIFl',
-  'https://s.click.aliexpress.com/e/_m02VD9N',
-  'https://meli.la/2uuSaJN',
+  'https://meli.la/2SMYU1C',
+  'https://meli.la/157kRDu',
+  'https://meli.la/2TKrt37',
+  'https://meli.la/19uGpgV',
+  'https://meli.la/2FHVSb8',
 ];
 
 export const MELI_AFFILIATE_LINKS = AFFILIATE_LINKS;
 
-const STORAGE_KEY = 'hg_affiliate_rotation_index_v2';
+const STORAGE_KEY = 'hg_affiliate_rotation_index_v3';
 let inMemoryIndex = 0;
 const listeners = new Set<() => void>();
 
