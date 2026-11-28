@@ -22,6 +22,24 @@ export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getA
 // Initialize Firestore
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId || '(default)');
 
+// Circuit breaker para evitar loops de backoff quando a cota diária gratuita de escrita do Firestore for atingida
+let isWriteQuotaExceeded = false;
+
+function isQuotaError(err: unknown): boolean {
+  const code = (err as { code?: string })?.code;
+  const message = (err as { message?: string })?.message || '';
+  return code === 'resource-exhausted' || message.toLowerCase().includes('quota');
+}
+
+function handleWriteError(err: unknown, context: string): boolean {
+  if (isQuotaError(err)) {
+    isWriteQuotaExceeded = true;
+    return true;
+  }
+  console.warn(`Firestore write skipped (${context}):`, err);
+  return false;
+}
+
 // Initial connection test
 export async function testFirebaseConnection(): Promise<boolean> {
   try {
@@ -79,16 +97,28 @@ export const INITIAL_GAMES: GameItem[] = [
     title: 'Grand Theft Auto VI GTA 6',
     realName: 'Grand Theft Auto VI',
     platform: 'PS5',
-    driveUrl: 'https://vikingfile.com/f/ZbYf8KbOWD#GRAND',
+    driveUrl: 'https://link-vault.org/c/Iu1bNOpz#DataNodes',
     coverUrl: '/covers/gta_vi.jpg',
     likes: 512,
     downloads: 1120,
     developer: 'Rockstar Games',
-    description: 'Explore o vibrante estado de Leonida e as ruas ensolaradas de Vice City no maior mundo aberto da Rockstar Games, disponível nas versões FPKG BKP 4.xx e ZSTD para PS5.',
+    description: 'Explore o vibrante estado de Leonida e as ruas ensolaradas de Vice City no maior mundo aberto da Rockstar Games, compatível com 4.xx a 13.60 e ZSTD no PS5.',
     extraLinks: [
       {
-        name: 'Download FPKG BKP 4.xx',
-        url: 'https://vikingfile.com/f/ZbYf8KbOWD#GRAND',
+        name: 'Opção 1 — 4.xx a 13.60 (DataNodes)',
+        url: 'https://link-vault.org/c/Iu1bNOpz#DataNodes',
+      },
+      {
+        name: 'Opção 2 — 4.xx a 13.60 (AkiraBox)',
+        url: 'https://link-vault.org/c/Iu1bNOpz#AkiraBox',
+      },
+      {
+        name: 'Opção 3 — 4.xx a 13.60 (FileKeeper)',
+        url: 'https://link-vault.org/c/Iu1bNOpz#FileKeeper',
+      },
+      {
+        name: 'Opção 4 — 4.xx a 13.60 (VikingFile)',
+        url: 'https://link-vault.org/c/Iu1bNOpz#VikingFile',
       },
       {
         name: 'Download ZSTD',
@@ -99,6 +129,10 @@ export const INITIAL_GAMES: GameItem[] = [
         url: 'https://vik1ngf1le.online/f/ywYrSzhQk3',
         description:
           'Patch de correção: ajusta o erro de fechar o jogo, ajusta o clima para chover e traz mais melhorias.',
+      },
+      {
+        name: 'Download de Todas as DLCs',
+        url: 'https://drive.google.com/drive/folders/12_74Es6KXJuXLVPNnwrLbi3bebPFPxUs?usp=sharing',
       },
     ],
   },
@@ -687,7 +721,7 @@ export const PARTNER_GAME_IDS = new Set<string>([
   'crimson_desert',
 ]);
 
-// Subscribe to games with real-time updates and permanent partner attribution guarantee
+// Subscribe to games with real-time updates (somente leitura para preservar a cota de escrita do Firestore)
 export function subscribeGames(callback: (games: GameItem[]) => void) {
   const gamesCollection = collection(db, 'games');
   const initialMap = new Map(INITIAL_GAMES.map((g) => [g.id, g]));
@@ -696,66 +730,42 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
     gamesCollection,
     (snapshot) => {
       if (snapshot.empty) {
-        INITIAL_GAMES.forEach((game) => {
-          setDoc(doc(db, 'games', game.id), game).catch(console.error);
-        });
         callback(INITIAL_GAMES);
-      } else {
-        const firestoreDataMap = new Map<string, any>();
-        const existingIds = new Set<string>();
-        snapshot.forEach((d) => {
-          existingIds.add(d.id);
-          firestoreDataMap.set(d.id, d.data());
-        });
-
-        // Ensure newly introduced games sync into Firestore, and update modified driveUrls/titles/extraLinks
-        INITIAL_GAMES.forEach((initGame) => {
-          const existingDoc = firestoreDataMap.get(initGame.id);
-          if (!existingIds.has(initGame.id)) {
-            setDoc(doc(db, 'games', initGame.id), initGame).catch(console.error);
-          } else if (
-            existingDoc?.driveUrl !== initGame.driveUrl ||
-            existingDoc?.realName !== initGame.realName ||
-            JSON.stringify(existingDoc?.extraLinks || []) !== JSON.stringify(initGame.extraLinks || [])
-          ) {
-            updateDoc(doc(db, 'games', initGame.id), {
-              driveUrl: initGame.driveUrl,
-              realName: initGame.realName,
-              title: initGame.title,
-              description: initGame.description || '',
-              ...(initGame.extraLinks ? { extraLinks: initGame.extraLinks } : {}),
-            }).catch(console.error);
-          }
-        });
-
-        // Construct canonical games list: static catalog definitions merged with live Firestore likes/downloads
-        const games: GameItem[] = INITIAL_GAMES.map((initGame) => {
-          const liveData = firestoreDataMap.get(initGame.id);
-          const isPartner = PARTNER_GAME_IDS.has(initGame.id);
-          return {
-            ...initGame,
-            likes: typeof liveData?.likes === 'number' ? liveData.likes : initGame.likes,
-            downloads: typeof liveData?.downloads === 'number' ? liveData.downloads : initGame.downloads,
-            // Guarantee partner credit persistence across all reloads & updates:
-            partnerCredit: isPartner ? RAFAEL_PARTNER_CREDIT : undefined,
-          };
-        });
-
-        // Add any extra custom games added through Firestore that aren't in INITIAL_GAMES
-        snapshot.forEach((d) => {
-          if (!initialMap.has(d.id)) {
-            const data = d.data() as Omit<GameItem, 'id'>;
-            const isPartner = PARTNER_GAME_IDS.has(d.id);
-            games.push({
-              id: d.id,
-              ...data,
-              partnerCredit: isPartner ? RAFAEL_PARTNER_CREDIT : undefined,
-            });
-          }
-        });
-
-        callback(games);
+        return;
       }
+
+      const firestoreDataMap = new Map<string, any>();
+      snapshot.forEach((d) => {
+        firestoreDataMap.set(d.id, d.data());
+      });
+
+      // Construct canonical games list: static catalog definitions merged with live Firestore likes/downloads
+      const games: GameItem[] = INITIAL_GAMES.map((initGame) => {
+        const liveData = firestoreDataMap.get(initGame.id);
+        const isPartner = PARTNER_GAME_IDS.has(initGame.id);
+        return {
+          ...initGame,
+          likes: typeof liveData?.likes === 'number' ? liveData.likes : initGame.likes,
+          downloads: typeof liveData?.downloads === 'number' ? liveData.downloads : initGame.downloads,
+          // Guarantee partner credit persistence across all reloads & updates:
+          partnerCredit: isPartner ? RAFAEL_PARTNER_CREDIT : undefined,
+        };
+      });
+
+      // Add any extra custom games added through Firestore that aren't in INITIAL_GAMES
+      snapshot.forEach((d) => {
+        if (!initialMap.has(d.id)) {
+          const data = d.data() as Omit<GameItem, 'id'>;
+          const isPartner = PARTNER_GAME_IDS.has(d.id);
+          games.push({
+            id: d.id,
+            ...data,
+            partnerCredit: isPartner ? RAFAEL_PARTNER_CREDIT : undefined,
+          });
+        }
+      });
+
+      callback(games);
     },
     () => {
       callback(INITIAL_GAMES);
@@ -763,24 +773,20 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
   );
 }
 
-// Increment likes
+// Increment likes (usa merge para funcionar mesmo em títulos novos sem seed automático)
 export async function likeGame(gameId: string) {
+  if (isWriteQuotaExceeded) return;
   try {
     const gameRef = doc(db, 'games', gameId);
-    await updateDoc(gameRef, { likes: increment(1) });
+    await setDoc(gameRef, { likes: increment(1) }, { merge: true });
   } catch (err) {
-    console.error('Error liking game:', err);
+    handleWriteError(err, 'likeGame');
   }
 }
 
-// Increment downloads
-export async function incrementDownload(gameId: string) {
-  try {
-    const gameRef = doc(db, 'games', gameId);
-    await updateDoc(gameRef, { downloads: increment(1) });
-  } catch (err) {
-    console.error('Error updating downloads:', err);
-  }
+// Mantido sem escrita no Firestore para evitar consumo excessivo da cota diária gratuita em cada download
+export async function incrementDownload(_gameId: string) {
+  return;
 }
 
 // Real-time community messages
@@ -803,6 +809,7 @@ export function subscribeSupporterMessages(callback: (messages: SupporterMessage
 
 // Add community game request message
 export async function addSupporterMessage(name: string, message: string, gameRequested?: string) {
+  if (isWriteQuotaExceeded) return false;
   try {
     await addDoc(collection(db, 'supporterMessages'), {
       name: name.trim(),
@@ -812,7 +819,8 @@ export async function addSupporterMessage(name: string, message: string, gameReq
       timestamp: serverTimestamp(),
     });
     return true;
-  } catch {
+  } catch (err) {
+    handleWriteError(err, 'addSupporterMessage');
     return false;
   }
 }
@@ -831,7 +839,7 @@ export const DEFAULT_SYSTEM_SETTINGS: SystemSettings = {
   customNoticeMessage: '',
 };
 
-// Real-time listener for system settings
+// Real-time listener for system settings (somente leitura)
 export function subscribeSystemSettings(callback: (settings: SystemSettings) => void) {
   const docRef = doc(db, 'systemSettings', 'licenses');
   return onSnapshot(
@@ -846,7 +854,6 @@ export function subscribeSystemSettings(callback: (settings: SystemSettings) => 
           updatedAt: data.updatedAt,
         });
       } else {
-        setDoc(docRef, DEFAULT_SYSTEM_SETTINGS, { merge: true }).catch(() => {});
         callback(DEFAULT_SYSTEM_SETTINGS);
       }
     },
@@ -860,6 +867,9 @@ export function subscribeSystemSettings(callback: (settings: SystemSettings) => 
 export async function updateSystemSettings(
   updates: Partial<SystemSettings>
 ): Promise<{ success: boolean; error?: string }> {
+  if (isWriteQuotaExceeded) {
+    return { success: false, error: 'Limite diário de gravações do banco atingido. Tente novamente amanhã.' };
+  }
   try {
     const docRef = doc(db, 'systemSettings', 'licenses');
     await setDoc(
@@ -872,8 +882,13 @@ export async function updateSystemSettings(
     );
     return { success: true };
   } catch (err: any) {
-    console.error('Error updating system settings:', err);
-    return { success: false, error: err.message || 'Erro ao salvar configurações.' };
+    const quotaHit = handleWriteError(err, 'updateSystemSettings');
+    return {
+      success: false,
+      error: quotaHit
+        ? 'Limite diário de gravações do banco atingido. Tente novamente amanhã.'
+        : err.message || 'Erro ao salvar configurações.',
+    };
   }
 }
 
@@ -967,35 +982,23 @@ export const INITIAL_GAME_REQUESTS: GameRequestItem[] = [
   },
 ];
 
-// Inscrição em tempo real para os pedidos de jogos ("Peça seu Game Aqui!!")
+// Inscrição em tempo real para os pedidos de jogos ("Peça seu Game Aqui!!") - somente leitura
 export function subscribeGameRequests(callback: (requests: GameRequestItem[]) => void) {
   const reqCollection = collection(db, 'gameRequests');
   return onSnapshot(
     reqCollection,
     (snapshot) => {
       if (snapshot.empty) {
-        INITIAL_GAME_REQUESTS.forEach((item) => {
-          setDoc(doc(db, 'gameRequests', item.id), {
-            gameTitle: item.gameTitle,
-            userName: item.userName,
-            notes: item.notes || '',
-            likes: item.likes,
-            status: item.status || 'voting',
-            createdAt: item.createdAt || 'Hoje',
-            timestamp: serverTimestamp(),
-          }).catch(console.error);
-        });
         callback(INITIAL_GAME_REQUESTS);
-      } else {
-        const requests: GameRequestItem[] = [];
-        snapshot.forEach((d) => {
-          requests.push({ id: d.id, ...(d.data() as Omit<GameRequestItem, 'id'>) });
-        });
-        callback(requests);
+        return;
       }
+      const requests: GameRequestItem[] = [];
+      snapshot.forEach((d) => {
+        requests.push({ id: d.id, ...(d.data() as Omit<GameRequestItem, 'id'>) });
+      });
+      callback(requests);
     },
-    (err) => {
-      console.warn('Erro ao carregar pedidos do Firestore, usando lista inicial:', err);
+    () => {
       callback(INITIAL_GAME_REQUESTS);
     }
   );
@@ -1003,6 +1006,12 @@ export function subscribeGameRequests(callback: (requests: GameRequestItem[]) =>
 
 // Adicionar um novo pedido de jogo no Firestore
 export async function addGameRequest(gameTitle: string, userName: string, notes?: string) {
+  if (isWriteQuotaExceeded) {
+    return {
+      success: false,
+      error: 'Limite diário de pedidos do servidor atingido hoje. Tente novamente amanhã!',
+    };
+  }
   try {
     const docRef = await addDoc(collection(db, 'gameRequests'), {
       gameTitle: gameTitle.trim(),
@@ -1015,13 +1024,19 @@ export async function addGameRequest(gameTitle: string, userName: string, notes?
     });
     return { success: true, id: docRef.id };
   } catch (err: any) {
-    console.error('Erro ao adicionar pedido de jogo:', err);
-    return { success: false, error: err.message };
+    const quotaHit = handleWriteError(err, 'addGameRequest');
+    return {
+      success: false,
+      error: quotaHit
+        ? 'Limite diário de pedidos do servidor atingido hoje. Tente novamente amanhã!'
+        : err.message,
+    };
   }
 }
 
 // Dar joinha / curtir (ou remover curtida) em um pedido de jogo
 export async function likeGameRequest(requestId: string, delta: number = 1) {
+  if (isWriteQuotaExceeded) return false;
   try {
     const reqRef = doc(db, 'gameRequests', requestId);
     await updateDoc(reqRef, {
@@ -1029,7 +1044,7 @@ export async function likeGameRequest(requestId: string, delta: number = 1) {
     });
     return true;
   } catch (err) {
-    console.error('Erro ao curtir pedido de jogo:', err);
+    handleWriteError(err, 'likeGameRequest');
     return false;
   }
 }

@@ -122,7 +122,7 @@ export const RealtimeSupporterBoard: React.FC = () => {
     } else {
       setFormFeedback({
         type: 'error',
-        message: 'Ocorreu um erro ao registrar seu pedido. Tente novamente!',
+        message: res.error || 'Ocorreu um erro ao registrar seu pedido. Tente novamente!',
       });
       setTimeout(() => setFormFeedback(null), 4000);
     }
