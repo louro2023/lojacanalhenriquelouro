@@ -196,11 +196,18 @@ export const DownloadModal: React.FC<DownloadModalProps> = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={handleDownloadClick}
-                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.15)] touch-manipulation"
+                  className="w-full py-2.5 px-3.5 rounded-xl bg-gradient-to-r from-amber-500/20 via-orange-500/20 to-amber-600/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-200 hover:text-white transition-all flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.15)] touch-manipulation"
                 >
-                  <Download className="w-3.5 h-3.5 text-amber-400" />
-                  <span>{extra.name}</span>
-                  <ExternalLink className="w-3 h-3 opacity-75" />
+                  <span className="font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2">
+                    <Download className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span>{extra.name}</span>
+                    <ExternalLink className="w-3 h-3 opacity-75 shrink-0" />
+                  </span>
+                  {extra.description && (
+                    <span className="text-[11px] font-medium text-amber-100/90 normal-case tracking-normal leading-snug text-center">
+                      {extra.description}
+                    </span>
+                  )}
                 </a>
               ))}
             </div>

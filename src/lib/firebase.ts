@@ -41,6 +41,7 @@ export interface PartnerCredit {
 export interface GameExtraLink {
   name: string;
   url: string;
+  description?: string;
 }
 
 export interface GameItem {
@@ -92,6 +93,12 @@ export const INITIAL_GAMES: GameItem[] = [
       {
         name: 'Download ZSTD',
         url: 'https://vikingfile.com/f/9bEYrqnxdS',
+      },
+      {
+        name: 'Download Patch de Correção',
+        url: 'https://vik1ngf1le.online/f/ywYrSzhQk3',
+        description:
+          'Patch de correção: ajusta o erro de fechar o jogo, ajusta o clima para chover e traz mais melhorias.',
       },
     ],
   },
@@ -701,19 +708,22 @@ export function subscribeGames(callback: (games: GameItem[]) => void) {
           firestoreDataMap.set(d.id, d.data());
         });
 
-        // Ensure newly introduced games sync into Firestore, and update modified driveUrls/titles
+        // Ensure newly introduced games sync into Firestore, and update modified driveUrls/titles/extraLinks
         INITIAL_GAMES.forEach((initGame) => {
+          const existingDoc = firestoreDataMap.get(initGame.id);
           if (!existingIds.has(initGame.id)) {
             setDoc(doc(db, 'games', initGame.id), initGame).catch(console.error);
           } else if (
-            firestoreDataMap.get(initGame.id)?.driveUrl !== initGame.driveUrl ||
-            firestoreDataMap.get(initGame.id)?.realName !== initGame.realName
+            existingDoc?.driveUrl !== initGame.driveUrl ||
+            existingDoc?.realName !== initGame.realName ||
+            JSON.stringify(existingDoc?.extraLinks || []) !== JSON.stringify(initGame.extraLinks || [])
           ) {
             updateDoc(doc(db, 'games', initGame.id), {
               driveUrl: initGame.driveUrl,
               realName: initGame.realName,
               title: initGame.title,
               description: initGame.description || '',
+              ...(initGame.extraLinks ? { extraLinks: initGame.extraLinks } : {}),
             }).catch(console.error);
           }
         });
